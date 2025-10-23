@@ -25,32 +25,25 @@ func _on_tileset_selected(selected_file_path: String) -> void:
 	# load the tileset
 	var loaded_tileset: TileSet = load(selected_file_path)
 	
-	#calculate tile size to loop for each coords
-	#var tile_width: int = loaded_tileset.tile_size.x
-	#var tile_height: int = loaded_tileset.tile_size.y
-	# tile coords in tileset are incremental 1,0   2,0 etc
-	
 	#get its source
 	var tileset_source: TileSetSource = loaded_tileset.get_source(0)
-	# tileset_source.get_atlas_grid_size() can be used to determine the rect that the atlas is
-	# but it is 1-indexed, so I need to subtract -1 to query i coords
 	
 	var rows: int = tileset_source.get_atlas_grid_size().y
+	# but it is 1-indexed, so I need to subtract -1 to query i coords
 	var cols: int = tileset_source.get_atlas_grid_size().x
 	
-	if tileset_source is TileSetAtlasSource:
-		#get_tile_texture_region
-		#$CanvasLayer/Control/Tiles/TextureRect.texture = tileset_source.texture
-		print(tileset_source.get_atlas_grid_size())
-		
+	if tileset_source is TileSetAtlasSource: # if selected is a source
 		for row in rows:
 			for col in cols:
+				# for each tile in tileset, check if its set to usable
 				if !tileset_source.has_tile(Vector2i(col, row)): continue
 				
+				# creates a new atlas to hold the tile texture
 				var atlas: AtlasTexture = AtlasTexture.new()
 				atlas.atlas = tileset_source.texture
 				atlas.region = tileset_source.get_tile_texture_region(Vector2i(col, row))
 				
+				# creates the button
 				var texture_r: TextureRect = TextureRect.new()
 				texture_r.texture = atlas
 				tiles_grid_container.add_child(texture_r)
