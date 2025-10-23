@@ -1,24 +1,21 @@
-[gd_scene load_steps=3 format=4 uid="uid://dffrfxm63hfxn"]
+[gd_scene load_steps=4 format=4 uid="uid://dffrfxm63hfxn"]
 
 [ext_resource type="Script" uid="uid://dqxhk3ddif8rq" path="res://scenes/ui/hex_map_editor/hex_map_editor.gd" id="1_ov8ee"]
 [ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_r5cqj"]
+[ext_resource type="Script" uid="uid://drug3p4qtjwk" path="res://scenes/ui/hex_map_editor/camera_input.gd" id="3_n2lvb"]
 
-[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container")]
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "main_background", "camera", "world_tilemap", "pencil_tilemap")]
 script = ExtResource("1_ov8ee")
 tileset_picker_button = NodePath("CanvasLayer/Tools/TilesetPickerButton")
 tileset_picker = NodePath("CanvasLayer/Tools/TilesetPicker")
 tiles_grid_container = NodePath("CanvasLayer/Tools/TilesContainer")
+tools_container = NodePath("CanvasLayer/Tools")
+main_background = NodePath("MainBackground")
+camera = NodePath("Camera2D")
+world_tilemap = NodePath("World")
+pencil_tilemap = NodePath("Pencil")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="MainBackground" type="ColorRect" parent="CanvasLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.103199996, 0.12372001, 0.24000001, 1)
-metadata/_edit_lock_ = true
 
 [node name="Tools" type="Control" parent="CanvasLayer"]
 layout_mode = 3
@@ -61,6 +58,28 @@ offset_right = 204.0
 offset_bottom = 420.0
 columns = 5
 
-[node name="World" type="TileMapLayer" parent="CanvasLayer"]
+[node name="CameraInput" type="Node" parent="." node_paths=PackedStringArray("target_camera")]
+script = ExtResource("3_n2lvb")
+target_camera = NodePath("../Camera2D")
+
+[node name="MainBackground" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1151.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.103199996, 0.12372001, 0.24000001, 1)
+metadata/_edit_lock_ = true
+
+[node name="World" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAVAPz/AAAAAAAAAAAWAPz/AAAAAAAAAAAWAPv/AAAAAAAAAAAVAPv/AAAAAAAAAAAUAPr/AAAAAAAAAAAUAPv/AAAAAAAAAAAXAPz/AAABAAAAAAAXAP3/AAABAAAAAAAWAP3/AAABAAAAAAAVAP3/AAABAAAAAAAYAP3/AAACAAAAAAAYAPz/AAACAAAAAAAXAPv/AAACAAAAAAAWAPr/AAACAAAAAAAVAPr/AAACAAAAAAAVAPn/AAACAAAAAAAUAPn/AAACAAAAAAATAPn/AAACAAAAAAATAPr/AAACAAAAAAATAPv/AAACAAAAAAAUAPz/AAACAAAAAAAUAP3/AAACAAAAAAATAPz/AAACAAAAAAATAP3/AAACAAAAAAAVAP7/AAACAAAAAAAZAPz/AAAGAAAAAAAYAPv/AAAGAAAAAAAXAPr/AAAKAAMAAAAXAPn/AAAKAAMAAAAWAPn/AAAKAAMAAAAVAPj/AAAKAAMAAAAWAPj/AAAKAAMAAAAUAPj/AAAKAAMAAAATAPj/AAAMAAIAAAASAPj/AAAMAAIAAAASAPn/AAAMAAIAAAASAPr/AAALAAMAAAASAPv/AAABAAAAAAARAPv/AAABAAAAAAARAPr/AAABAAAAAAARAPn/AAABAAAAAAA=")
 tile_set = ExtResource("2_r5cqj")
+
+[node name="Pencil" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAAVAPz/AAAAAAAAAAAWAPz/AAAAAAAAAAAWAPv/AAAAAAAAAAAVAPv/AAAAAAAAAAAUAPr/AAAAAAAAAAAUAPv/AAAAAAAAAAAXAPz/AAABAAAAAAAXAP3/AAABAAAAAAAWAP3/AAABAAAAAAAVAP3/AAABAAAAAAAYAP3/AAACAAAAAAAYAPz/AAACAAAAAAAXAPv/AAACAAAAAAAWAPr/AAACAAAAAAAVAPr/AAACAAAAAAAVAPn/AAACAAAAAAAUAPn/AAACAAAAAAATAPn/AAACAAAAAAATAPr/AAACAAAAAAATAPv/AAACAAAAAAAUAPz/AAACAAAAAAAUAP3/AAACAAAAAAATAPz/AAACAAAAAAATAP3/AAACAAAAAAAVAP7/AAACAAAAAAAZAPz/AAAGAAAAAAAYAPv/AAAGAAAAAAAXAPr/AAAKAAMAAAAXAPn/AAAKAAMAAAAWAPn/AAAKAAMAAAAVAPj/AAAKAAMAAAAWAPj/AAAKAAMAAAAUAPj/AAAKAAMAAAATAPj/AAAMAAIAAAASAPj/AAAMAAIAAAASAPn/AAAMAAIAAAASAPr/AAALAAMAAAASAPv/AAABAAAAAAARAPv/AAABAAAAAAARAPr/AAABAAAAAAARAPn/AAABAAAAAAA=")
+tile_set = ExtResource("2_r5cqj")
+
+[node name="Camera2D" type="Camera2D" parent="."]
