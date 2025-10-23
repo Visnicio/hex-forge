@@ -1,0 +1,66 @@
+[gd_scene load_steps=3 format=4 uid="uid://dffrfxm63hfxn"]
+
+[ext_resource type="Script" uid="uid://dqxhk3ddif8rq" path="res://scenes/ui/hex_map_editor/hex_map_editor.gd" id="1_ov8ee"]
+[ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_r5cqj"]
+
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container")]
+script = ExtResource("1_ov8ee")
+tileset_picker_button = NodePath("CanvasLayer/Tools/TilesetPickerButton")
+tileset_picker = NodePath("CanvasLayer/Tools/TilesetPicker")
+tiles_grid_container = NodePath("CanvasLayer/Tools/TilesContainer")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MainBackground" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.103199996, 0.12372001, 0.24000001, 1)
+metadata/_edit_lock_ = true
+
+[node name="Tools" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchor_right = 0.2048611
+anchor_bottom = 1.0
+metadata/_edit_use_anchors_ = true
+
+[node name="ToolsBackground" type="ColorRect" parent="CanvasLayer/Tools"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.055899993, 0.06701501, 0.13, 1)
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="TilesetPicker" type="FileDialog" parent="CanvasLayer/Tools"]
+oversampling_override = 1.0
+title = "Open a File"
+file_mode = 0
+
+[node name="TilesetPickerButton" type="Button" parent="CanvasLayer/Tools"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Pick a tileset"
+
+[node name="TilesContainer" type="GridContainer" parent="CanvasLayer/Tools"]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 195.0
+offset_right = 204.0
+offset_bottom = 420.0
+columns = 5
+
+[node name="World" type="TileMapLayer" parent="CanvasLayer"]
+tile_map_data = PackedByteArray("AAAVAPz/AAAAAAAAAAAWAPz/AAAAAAAAAAAWAPv/AAAAAAAAAAAVAPv/AAAAAAAAAAAUAPr/AAAAAAAAAAAUAPv/AAAAAAAAAAAXAPz/AAABAAAAAAAXAP3/AAABAAAAAAAWAP3/AAABAAAAAAAVAP3/AAABAAAAAAAYAP3/AAACAAAAAAAYAPz/AAACAAAAAAAXAPv/AAACAAAAAAAWAPr/AAACAAAAAAAVAPr/AAACAAAAAAAVAPn/AAACAAAAAAAUAPn/AAACAAAAAAATAPn/AAACAAAAAAATAPr/AAACAAAAAAATAPv/AAACAAAAAAAUAPz/AAACAAAAAAAUAP3/AAACAAAAAAATAPz/AAACAAAAAAATAP3/AAACAAAAAAAVAP7/AAACAAAAAAAZAPz/AAAGAAAAAAAYAPv/AAAGAAAAAAAXAPr/AAAKAAMAAAAXAPn/AAAKAAMAAAAWAPn/AAAKAAMAAAAVAPj/AAAKAAMAAAAWAPj/AAAKAAMAAAAUAPj/AAAKAAMAAAATAPj/AAAMAAIAAAASAPj/AAAMAAIAAAASAPn/AAAMAAIAAAASAPr/AAALAAMAAAASAPv/AAABAAAAAAARAPv/AAABAAAAAAARAPr/AAABAAAAAAARAPn/AAABAAAAAAA=")
+tile_set = ExtResource("2_r5cqj")

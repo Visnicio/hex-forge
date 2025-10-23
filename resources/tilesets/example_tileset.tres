@@ -1,0 +1,24 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dekawidgy8nlu"]
+
+[ext_resource type="Texture2D" uid="uid://2dgkya7q2ewb" path="res://assets/gfx/tiles/hex_tileset.png" id="1_6qxww"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lwb42"]
+texture = ExtResource("1_6qxww")
+texture_region_size = Vector2i(32, 48)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+12:2/0 = 0
+11:3/0 = 0
+10:3/0 = 0
+
+[resource]
+tile_shape = 3
+tile_layout = 5
+tile_offset_axis = 1
+tile_size = Vector2i(32, 28)
+sources/0 = SubResource("TileSetAtlasSource_lwb42")
