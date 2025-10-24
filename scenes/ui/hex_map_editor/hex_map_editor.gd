@@ -51,8 +51,23 @@ func _on_tileset_picker_button_pressed() -> void:
 
 
 func _on_tileset_selected(selected_file_path: String) -> void:
+	load_tileset_for_map(selected_file_path)
+
+
+func _create_tile_button(button_texture: Texture2D, buttons_container: GridContainer, original_tile_coords: Vector2i) -> void:
+	var new_button: TextureButton = TextureButton.new()
+	new_button.texture_normal = button_texture
+	
+	new_button.pressed.connect(func():
+		current_selected_tile_coords = original_tile_coords
+		)
+	
+	buttons_container.add_child(new_button)
+
+
+func load_tileset_for_map(tileset_resource_path: String) -> void:
 	# load the tileset
-	var loaded_tileset: TileSet = load(selected_file_path)
+	var loaded_tileset: TileSet = load(tileset_resource_path)
 	pencil_tilemap.tile_set = loaded_tileset
 	world_tilemap.tile_set = loaded_tileset
 	
@@ -78,14 +93,3 @@ func _on_tileset_selected(selected_file_path: String) -> void:
 				
 				# creates the button
 				_create_tile_button(atlas, tiles_grid_container, tile_coord)
-
-
-func _create_tile_button(button_texture: Texture2D, buttons_container: GridContainer, original_tile_coords: Vector2i) -> void:
-	var new_button: TextureButton = TextureButton.new()
-	new_button.texture_normal = button_texture
-	
-	new_button.pressed.connect(func():
-		current_selected_tile_coords = original_tile_coords
-		)
-	
-	buttons_container.add_child(new_button)
