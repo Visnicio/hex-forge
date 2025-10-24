@@ -12,6 +12,7 @@ enum State {
 
 var editor: HexMapEditor
 var current_state: State = State.LOADING
+var last_map_loaded_path: String = ""
 
 func _ready() -> void:
 	editor = get_parent() as HexMapEditor
@@ -34,7 +35,9 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("shortcut_save"):
-		print_debug("Trying to quicksave")
+		if last_map_loaded_path != "":
+			print_debug("Quicksaving: ", last_map_loaded_path)
+			save_current_map(last_map_loaded_path)
 
 	
 func on_file_selected(map_path: String) -> void:
@@ -66,6 +69,8 @@ func load_map_into_editor(map_path: String) -> void:
 		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
 		var cell_data: Dictionary = map_data.decals_map.cells[cell_data_key]
 		editor.decals_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
+		
+	last_map_loaded_path = map_path
 
 func save_current_map(map_path: String) -> void:
 	var map_data = {}
