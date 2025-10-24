@@ -5,6 +5,7 @@ extends Node2D
 @export var tileset_picker: FileDialog
 @export var tiles_grid_container: GridContainer
 @export var tools_container: Control
+@export var map_name_input: LineEdit
 
 @export var main_background: ColorRect
 @export var camera: Camera2D
@@ -22,10 +23,7 @@ func _ready() -> void:
 	tileset_picker.file_selected.connect(_on_tileset_selected)
 	
 	# clear defaults
-	world_tilemap.clear()
-	world_tilemap.tile_set = null
-	pencil_tilemap.clear()
-	pencil_tilemap.tile_set = null
+	clear_maps()
 
 func _process(delta: float) -> void:
 	main_background.global_position = camera.get_screen_center_position() - main_background.get_rect().size / 2 # hacky to keep the background on screen but behind canvas layer
@@ -37,9 +35,10 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	
 	# paint the world: is pressed, something is selected, mouse is not on tools
-	var is_mouse_on_tools: bool = !tools_container.get_global_rect().has_point(get_viewport().get_mouse_position())
+	var is_mouse_on_tools: bool = tools_container.get_global_rect().has_point(get_viewport().get_mouse_position())
+	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
 	var is_something_selected: bool = current_selected_tile_coords != Vector2i(-1, -1)
-	if Input.is_action_pressed("left_click") and is_something_selected and is_mouse_on_tools:
+	if Input.is_action_pressed("left_click") and is_something_selected and !is_mouse_on_tools and !is_typing_name:
 		world_tilemap.set_cell(world_tilemap.local_to_map(get_global_mouse_position()), 0, current_selected_tile_coords)
 		
 	# erase the world
@@ -93,3 +92,10 @@ func load_tileset_for_map(tileset_resource_path: String) -> void:
 				
 				# creates the button
 				_create_tile_button(atlas, tiles_grid_container, tile_coord)
+
+
+func clear_maps() -> void:
+	world_tilemap.clear()
+	world_tilemap.tile_set = null
+	pencil_tilemap.clear()
+	pencil_tilemap.tile_set = null

@@ -17,6 +17,8 @@ var current_state: State = State.LOADING
 func _ready() -> void:
 	editor = get_parent() as HexMapEditor
 	
+	map_file_dialog.add_filter("*.json", "Map Files")
+	
 	load_map_button.pressed.connect(func():
 		current_state = State.LOADING
 		map_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -37,9 +39,12 @@ func on_file_selected(map_path: String) -> void:
 		save_current_map(map_path)
 		
 	elif current_state == State.LOADING:
+		editor.clear_maps()
+		for child in editor.tiles_grid_container.get_children():
+			child.queue_free()
+		
 		var map_data: Dictionary = SaveManager.load_map(map_path)
 		map_name_input.text = map_data.get("map_name", "No Name Saved")
-		
 		editor.load_tileset_for_map(map_data.get("tileset_resource_path"))
 		
 		for cell_data_key: String in map_data.cells.keys():

@@ -5,12 +5,13 @@
 [ext_resource type="Script" uid="uid://drug3p4qtjwk" path="res://scenes/ui/hex_map_editor/camera_input.gd" id="3_n2lvb"]
 [ext_resource type="Script" uid="uid://hny0lij6a5dl" path="res://scenes/ui/hex_map_editor/map_data_manager.gd" id="4_u8lkl"]
 
-[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "main_background", "camera", "world_tilemap", "pencil_tilemap")]
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "main_background", "camera", "world_tilemap", "pencil_tilemap")]
 script = ExtResource("1_ov8ee")
 tileset_picker_button = NodePath("CanvasLayer/Tools/TilesetPickerButton")
 tileset_picker = NodePath("CanvasLayer/Tools/TilesetPicker")
 tiles_grid_container = NodePath("CanvasLayer/Tools/TilesContainer")
 tools_container = NodePath("CanvasLayer/Tools")
+map_name_input = NodePath("CanvasLayer/Tools/MapName")
 main_background = NodePath("MainBackground")
 camera = NodePath("Camera2D")
 world_tilemap = NodePath("World")
