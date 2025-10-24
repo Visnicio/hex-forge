@@ -13,10 +13,16 @@ func _physics_process(delta: float) -> void:
 	target_camera.global_position += camera_pan_direction * camera_speed * delta
 	
 func _input(event: InputEvent) -> void:
-	const up = 4
-	const down = 5
-	if event is InputEventMouseButton:
-		if event.button_index == up:
+	const WHEEL_UP = 4
+	const WHEEL_DOWN = 5
+
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == WHEEL_UP:
+			# Aproxima (zoom in)
 			target_camera.zoom += Vector2(0.1, 0.1)
-		if event.button_index == down:
+		elif event.button_index == WHEEL_DOWN:
+			# Afasta (zoom out)
 			target_camera.zoom -= Vector2(0.1, 0.1)
+
+		# Limita o zoom entre 0.5x e 2x
+		target_camera.zoom = target_camera.zoom.clamp(Vector2(0.5, 0.5), Vector2(2, 2))
