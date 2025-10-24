@@ -39,32 +39,32 @@ func on_file_selected(map_path: String) -> void:
 		save_current_map(map_path)
 		
 	elif current_state == State.LOADING:
-		editor.clear_maps()
-		for child in editor.tiles_grid_container.get_children():
-			child.queue_free()
-		
-		var map_data: Dictionary = SaveManager.load_map(map_path)
-		map_name_input.text = map_data.get("map_name", "No Name Saved")
-		editor.load_tileset_for_map(map_data.get("tileset_resource_path"))
-		
-		# load world map
-		for cell_data_key: String in map_data.world_map.cells.keys():
-			var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
-			var cell_data: Dictionary = map_data.world_map.cells[cell_data_key]
-			editor.world_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
-		
-		# load decals map
-		if !map_data.has("decals_map"): return
-		for cell_data_key: String in map_data.decals_map.cells.keys():
-			var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
-			var cell_data: Dictionary = map_data.decals_map.cells[cell_data_key]
-			editor.decals_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
+		load_map_into_editor(map_path);
 
+
+func load_map_into_editor(map_path: String) -> void:
+	editor.clear_maps()
+	for child in editor.tiles_grid_container.get_children():
+		child.queue_free()
+	
+	var map_data: Dictionary = SaveManager.load_map(map_path)
+	map_name_input.text = map_data.get("map_name", "No Name Saved")
+	editor.load_tileset_for_map(map_data.get("tileset_resource_path"))
+	
+	# load world map
+	for cell_data_key: String in map_data.world_map.cells.keys():
+		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
+		var cell_data: Dictionary = map_data.world_map.cells[cell_data_key]
+		editor.world_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
+	
+	# load decals map
+	if !map_data.has("decals_map"): return
+	for cell_data_key: String in map_data.decals_map.cells.keys():
+		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
+		var cell_data: Dictionary = map_data.decals_map.cells[cell_data_key]
+		editor.decals_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
 
 func save_current_map(map_path: String) -> void:
-	print(map_path)
-	print("trying to save ", map_name_input.text, " on path ", map_path)
-	
 	var map_data = {}
 	
 	map_data.world_map = {}
