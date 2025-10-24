@@ -37,19 +37,18 @@ func on_file_selected(map_path: String) -> void:
 		print(map_path)
 		print("trying to save ", map_name_input.text, " on path ", map_path)
 		
-		var map_data: MapSaveData = MapSaveData.new()
+		var map_data = {}
 		map_data.cells = {}
 		
 		# Create the .cells  key is cell_coord and value is dictionary
 		for cell_coord: Vector2i in editor.world_tilemap.get_used_cells(): # loop for the used cells to create the cell data to save
-			var cell_data: CellSaveData = CellSaveData.new()
-			cell_data.atlas_coords = editor.world_tilemap.get_cell_atlas_coords(cell_coord)
-			cell_data.source_id = editor.world_tilemap.get_cell_source_id(cell_coord)
-			map_data.cells[cell_coord] = cell_data
+			map_data.cells[cell_coord] = {
+				"atlas_coords": editor.world_tilemap.get_cell_atlas_coords(cell_coord)
+			}
 		
 		map_data.map_name = map_name_input.text
 		
-		SaveManager.save_map(map_path, map_file_dialog.current_file, map_data.to_dict())
+		SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
 		
 	elif current_state == State.LOADING:
 		var map_data: Dictionary = SaveManager.load_map(map_path)
