@@ -15,6 +15,10 @@ run/main_scene="uid://cv45u5rc2lx6p"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SaveManager="*res://autload/save_manager.gd"
+
 [dotnet]
 
 project/assembly_name="an_actual_useful_hex_mapper"

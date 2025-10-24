@@ -1,3 +1,4 @@
+class_name HexMapEditor
 extends Node2D
 
 @export var tileset_picker_button: Button
