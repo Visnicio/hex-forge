@@ -7,6 +7,9 @@
 			"(-10, -2)": {
 				"atlas_coords": "(4, 7)"
 			},
+			"(-7, 8)": {
+				"atlas_coords": "(2, 6)"
+			},
 			"(-6, 6)": {
 				"atlas_coords": "(14, 8)"
 			},
@@ -27,7 +30,7 @@
 			}
 		}
 	},
-	"map_name": "Punho de Ferro",
+	"map_name": "Punho de Ferro - V2",
 	"tileset_resource_path": "res://resources/tilesets/example_tileset.tres",
 	"world_map": {
 		"cells": {
@@ -1564,6 +1567,12 @@
 			"(-5, 7)": {
 				"atlas_coords": "(2, 0)"
 			},
+			"(-5, 8)": {
+				"atlas_coords": "(7, 0)"
+			},
+			"(-5, 9)": {
+				"atlas_coords": "(7, 0)"
+			},
 			"(-4, -17)": {
 				"atlas_coords": "(9, 1)"
 			},
@@ -1641,6 +1650,9 @@
 			},
 			"(-4, 8)": {
 				"atlas_coords": "(2, 0)"
+			},
+			"(-4, 9)": {
+				"atlas_coords": "(7, 0)"
 			},
 			"(-3, -16)": {
 				"atlas_coords": "(9, 1)"

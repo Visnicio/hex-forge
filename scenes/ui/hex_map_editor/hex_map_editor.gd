@@ -15,6 +15,8 @@ enum MapLayer {
 @export var main_background: ColorRect
 @export var camera: Camera2D
 
+@export var main_panels: Array[MarginContainer] 
+
 @export_group("Tilemaps")
 @export var world_tilemap: TileMapLayer
 @export var decals_tilemap: TileMapLayer
@@ -23,6 +25,7 @@ enum MapLayer {
 @export_group("Layers")
 @export var world_layer_checkbox: CheckBox
 @export var decals_layer_checkbox: CheckBox
+
 
 ## Holds the coords for the current selected tile to query it on the tileset, set it to (-1,-1) to clear the pencil
 var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
@@ -49,11 +52,10 @@ func _process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	
-	# paint the world: is pressed, something is selected, mouse is not on tools
-	var is_mouse_on_tools: bool = tools_container.get_global_rect().has_point(get_viewport().get_mouse_position())
+	# Paint the map
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
 	var is_something_selected: bool = current_selected_tile_coords != Vector2i(-1, -1)
-	if Input.is_action_pressed("left_click") and is_something_selected and !is_mouse_on_tools and !is_typing_name:
+	if Input.is_action_pressed("left_click") and is_something_selected and !is_mouse_on_tools() and !is_typing_name:
 		if current_layer_selected == MapLayer.WORLD:
 			world_tilemap.set_cell(world_tilemap.local_to_map(get_global_mouse_position()), 0, current_selected_tile_coords)
 		else:
@@ -132,3 +134,12 @@ func _on_world_layer_check_pressed() -> void:
 func _on_decal_layer_check_pressed() -> void:
 	current_layer_selected = MapLayer.DECAL
 	world_layer_checkbox.button_pressed = false
+
+
+func is_mouse_on_tools() -> bool:
+	
+	for panel: MarginContainer in main_panels:
+		if panel.get_global_rect().has_point(get_viewport().get_mouse_position()):
+			return true
+	
+	return false

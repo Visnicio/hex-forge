@@ -11,7 +11,6 @@ enum State {
 @export var map_name_input: LineEdit
 
 var editor: HexMapEditor
-
 var current_state: State = State.LOADING
 
 func _ready() -> void:
@@ -32,6 +31,10 @@ func _ready() -> void:
 		)
 	
 	map_file_dialog.file_selected.connect(on_file_selected)
+
+func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed("shortcut_save"):
+		print_debug("Trying to quicksave")
 
 	
 func on_file_selected(map_path: String) -> void:
