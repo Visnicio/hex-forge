@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=4 uid="uid://dffrfxm63hfxn"]
+[gd_scene load_steps=5 format=3 uid="uid://dffrfxm63hfxn"]
 
 [ext_resource type="Script" uid="uid://dqxhk3ddif8rq" path="res://scenes/ui/hex_map_editor/hex_map_editor.gd" id="1_ov8ee"]
 [ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_r5cqj"]
 [ext_resource type="Script" uid="uid://drug3p4qtjwk" path="res://scenes/ui/hex_map_editor/camera_input.gd" id="3_n2lvb"]
 [ext_resource type="Script" uid="uid://hny0lij6a5dl" path="res://scenes/ui/hex_map_editor/map_data_manager.gd" id="4_u8lkl"]
 
-[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox")]
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas")]
 script = ExtResource("1_ov8ee")
 tileset_picker_button = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPickerButton")
 tileset_picker = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPicker")
@@ -20,6 +20,9 @@ decals_tilemap = NodePath("Decals")
 pencil_tilemap = NodePath("Pencil")
 world_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/WorldLayerCheck")
 decals_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/DecalsLayerCheck")
+main_canvas = NodePath("CanvasLayer")
+metadata/_edit_vertical_guides_ = [959.0]
+metadata/_edit_horizontal_guides_ = [541.0]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -56,11 +59,16 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.015734266
 anchor_top = 0.32386363
-anchor_right = 0.1590909
+anchor_right = 0.22646444
 anchor_bottom = 0.6761364
 grow_vertical = 2
 metadata/_edit_group_ = true
 metadata/_edit_use_anchors_ = true
+
+[node name="NewMapButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Map"
 
 [node name="SaveMapButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
 layout_mode = 2
@@ -71,6 +79,11 @@ text = "Save"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Load"
+
+[node name="ExportButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export"
 
 [node name="ToolsContainer" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -201,22 +214,22 @@ color = Color(0.103199996, 0.12372001, 0.24000001, 1)
 metadata/_edit_lock_ = true
 
 [node name="World" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAVAPz/AAAAAAAAAAAWAPz/AAAAAAAAAAAWAPv/AAAAAAAAAAAVAPv/AAAAAAAAAAAUAPr/AAAAAAAAAAAUAPv/AAAAAAAAAAAXAPz/AAABAAAAAAAXAP3/AAABAAAAAAAWAP3/AAABAAAAAAAVAP3/AAABAAAAAAAYAP3/AAACAAAAAAAYAPz/AAACAAAAAAAXAPv/AAACAAAAAAAWAPr/AAACAAAAAAAVAPr/AAACAAAAAAAVAPn/AAACAAAAAAAUAPn/AAACAAAAAAATAPn/AAACAAAAAAATAPr/AAACAAAAAAATAPv/AAACAAAAAAAUAPz/AAACAAAAAAAUAP3/AAACAAAAAAATAPz/AAACAAAAAAATAP3/AAACAAAAAAAVAP7/AAACAAAAAAAZAPz/AAAGAAAAAAAYAPv/AAAGAAAAAAAXAPr/AAAKAAMAAAAXAPn/AAAKAAMAAAAWAPn/AAAKAAMAAAAVAPj/AAAKAAMAAAAWAPj/AAAKAAMAAAAUAPj/AAAKAAMAAAATAPj/AAAMAAIAAAASAPj/AAAMAAIAAAASAPn/AAAMAAIAAAASAPr/AAALAAMAAAASAPv/AAABAAAAAAARAPv/AAABAAAAAAARAPr/AAABAAAAAAARAPn/AAABAAAAAAA=")
 tile_set = ExtResource("2_r5cqj")
 
 [node name="Decals" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAVAPz/AAAAAAAAAAAWAPz/AAAAAAAAAAAWAPv/AAAAAAAAAAAVAPv/AAAAAAAAAAAUAPr/AAAAAAAAAAAUAPv/AAAAAAAAAAAXAPz/AAABAAAAAAAXAP3/AAABAAAAAAAWAP3/AAABAAAAAAAVAP3/AAABAAAAAAAYAP3/AAACAAAAAAAYAPz/AAACAAAAAAAXAPv/AAACAAAAAAAWAPr/AAACAAAAAAAVAPr/AAACAAAAAAAVAPn/AAACAAAAAAAUAPn/AAACAAAAAAATAPn/AAACAAAAAAATAPr/AAACAAAAAAATAPv/AAACAAAAAAAUAPz/AAACAAAAAAAUAP3/AAACAAAAAAATAPz/AAACAAAAAAATAP3/AAACAAAAAAAVAP7/AAACAAAAAAAZAPz/AAAGAAAAAAAYAPv/AAAGAAAAAAAXAPr/AAAKAAMAAAAXAPn/AAAKAAMAAAAWAPn/AAAKAAMAAAAVAPj/AAAKAAMAAAAWAPj/AAAKAAMAAAAUAPj/AAAKAAMAAAATAPj/AAAMAAIAAAASAPj/AAAMAAIAAAASAPn/AAAMAAIAAAASAPr/AAALAAMAAAASAPv/AAABAAAAAAARAPv/AAABAAAAAAARAPr/AAABAAAAAAARAPn/AAABAAAAAAA=")
 tile_set = ExtResource("2_r5cqj")
 
 [node name="Pencil" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAVAPz/AAAAAAAAAAAWAPz/AAAAAAAAAAAWAPv/AAAAAAAAAAAVAPv/AAAAAAAAAAAUAPr/AAAAAAAAAAAUAPv/AAAAAAAAAAAXAPz/AAABAAAAAAAXAP3/AAABAAAAAAAWAP3/AAABAAAAAAAVAP3/AAABAAAAAAAYAP3/AAACAAAAAAAYAPz/AAACAAAAAAAXAPv/AAACAAAAAAAWAPr/AAACAAAAAAAVAPr/AAACAAAAAAAVAPn/AAACAAAAAAAUAPn/AAACAAAAAAATAPn/AAACAAAAAAATAPr/AAACAAAAAAATAPv/AAACAAAAAAAUAPz/AAACAAAAAAAUAP3/AAACAAAAAAATAPz/AAACAAAAAAATAP3/AAACAAAAAAAVAP7/AAACAAAAAAAZAPz/AAAGAAAAAAAYAPv/AAAGAAAAAAAXAPr/AAAKAAMAAAAXAPn/AAAKAAMAAAAWAPn/AAAKAAMAAAAVAPj/AAAKAAMAAAAWAPj/AAAKAAMAAAAUAPj/AAAKAAMAAAATAPj/AAAMAAIAAAASAPj/AAAMAAIAAAASAPn/AAAMAAIAAAASAPr/AAALAAMAAAASAPv/AAABAAAAAAARAPv/AAABAAAAAAARAPr/AAABAAAAAAARAPn/AAABAAAAAAA=")
 tile_set = ExtResource("2_r5cqj")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "save_map_button", "load_map_button", "map_name_input")]
+[node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas")]
 script = ExtResource("4_u8lkl")
 map_file_dialog = NodePath("../CanvasLayer/ToolsContainer/Tools/MapPathDialog")
+new_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/NewMapButton")
 save_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/SaveMapButton")
 load_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/LoadMapButton")
+export_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/ExportButton")
 map_name_input = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/MapName")
+main_canvas = NodePath("../CanvasLayer")

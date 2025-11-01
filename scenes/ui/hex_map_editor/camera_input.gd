@@ -1,9 +1,7 @@
 extends Node
 
 @export var editor: HexMapEditor
-
 @export var target_camera: Camera2D
-
 @export var camera_speed: float = 100
 
 func _physics_process(delta: float) -> void:

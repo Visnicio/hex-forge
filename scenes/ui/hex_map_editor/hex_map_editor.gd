@@ -26,6 +26,9 @@ enum MapLayer {
 @export var world_layer_checkbox: CheckBox
 @export var decals_layer_checkbox: CheckBox
 
+@export_group("UI")
+@export var main_canvas: CanvasLayer
+
 
 ## Holds the coords for the current selected tile to query it on the tileset, set it to (-1,-1) to clear the pencil
 var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
@@ -67,6 +70,9 @@ func _input(event: InputEvent) -> void:
 			world_tilemap.set_cell(world_tilemap.local_to_map(get_global_mouse_position()), 0, Vector2i(-1, -1))
 		else:
 			decals_tilemap.set_cell(decals_tilemap.local_to_map(get_global_mouse_position()), 0, Vector2i(-1, -1))
+
+	if Input.is_action_just_pressed("hide_ui"):
+		main_canvas.visible = !main_canvas.visible
 
 func _on_tileset_picker_button_pressed() -> void:
 	tileset_picker.show()
