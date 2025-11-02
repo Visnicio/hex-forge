@@ -27,7 +27,7 @@ main_canvas = NodePath("CanvasLayer")
 metadata/_edit_vertical_guides_ = [959.0]
 metadata/_edit_horizontal_guides_ = [541.0, 167.0]
 
-[node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas")]
+[node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers")]
 script = ExtResource("4_u8lkl")
 map_file_dialog = NodePath("../CanvasLayer/ToolsContainer/Tools/MapPathDialog")
 new_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/NewMapButton")
@@ -36,6 +36,8 @@ load_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/Save
 export_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/ExportButton")
 map_name_input = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/MapName")
 main_canvas = NodePath("../CanvasLayer")
+markers = NodePath("../Markers")
+world_marker_scene = ExtResource("5_erscx")
 
 [node name="Markers" type="Node" parent="." node_paths=PackedStringArray("editor", "close_data_container_button", "place_poi_button", "marker_data_container", "marker_name_input", "marker_description_input", "marker_color_input")]
 script = ExtResource("5_ttthk")
@@ -277,7 +279,7 @@ anchors_preset = -1
 anchor_left = 0.026984127
 anchor_top = 0.058563534
 anchor_right = 0.97301584
-anchor_bottom = 0.94143647
+anchor_bottom = 0.918232
 metadata/_edit_use_anchors_ = true
 
 [node name="MarkerNameLabel" type="Label" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
@@ -296,12 +298,19 @@ text = "Marker Description"
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Place a public description here"
+wrap_mode = 1
+scroll_smooth = true
+caret_blink = true
 
 [node name="MarkerColorPicker" type="ColorPicker" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
 layout_mode = 2
 sampler_visible = false
 sliders_visible = false
 hex_visible = false
+
+[node name="DeleteMarkerButton" type="Button" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
+layout_mode = 2
+text = "Delete marker"
 
 [node name="CloseButton" type="Button" parent="CanvasLayer/MarkerContainer/MarkerData"]
 layout_mode = 1
@@ -320,8 +329,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -1275.3364
 offset_top = -718.0
-offset_right = 2426.3364
-offset_bottom = 1366.0
+offset_right = 3724.6636
+offset_bottom = 1482.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

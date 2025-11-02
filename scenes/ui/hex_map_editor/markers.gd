@@ -1,4 +1,4 @@
-extends Node
+class_name MarkersManager extends Node
 
 @export var marker_preview_scene: PackedScene
 @export var world_marker_scene: PackedScene

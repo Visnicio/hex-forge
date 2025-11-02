@@ -4,8 +4,7 @@ extends Node
 var data: Dictionary = {}
 
 
-func save_map(map_save_path: String, map_name: String, map_data: Dictionary) -> bool:
-	
+func save_map(map_save_path: String, _map_name: String, map_data: Dictionary) -> bool:
 	var file = FileAccess.open(map_save_path, FileAccess.WRITE)
 	if file:
 		var json_text = JSON.stringify(map_data, "\t") # parses the data to json "\t" for indentation

@@ -13,6 +13,10 @@ enum State {
 @export var map_name_input: LineEdit
 @export var main_canvas: CanvasLayer
 
+@export_group("Markers")
+@export var markers: MarkersManager
+@export var world_marker_scene: PackedScene
+
 var editor: HexMapEditor
 var current_state: State = State.LOADING
 var last_map_loaded_path: String = ""
@@ -86,7 +90,17 @@ func load_map_into_editor(map_path: String) -> void:
 		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
 		var cell_data: Dictionary = map_data.decals_map.cells[cell_data_key]
 		editor.decals_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
-		
+	
+	# load markers
+	if map_data.has("markers"):
+		for marker_name: String in map_data.markers.keys():
+			var new_world_marker = world_marker_scene.instantiate() as WorldMarker
+			new_world_marker.global_position = str_to_var("Vector2"+map_data.markers[marker_name].global_position) 
+			markers.add_child(new_world_marker)
+			new_world_marker.marker_description = map_data.markers[marker_name].marker_description
+			new_world_marker.marker_color = str_to_var("Color"+map_data.markers[marker_name].marker_color) 
+			new_world_marker.marker_name = map_data.markers[marker_name].marker_name
+	
 	last_map_loaded_path = map_path
 
 func save_current_map(map_path: String) -> void:
@@ -111,6 +125,9 @@ func save_current_map(map_path: String) -> void:
 	
 	map_data.map_name = map_name_input.text
 	map_data.tileset_resource_path = editor.world_tilemap.tile_set.resource_path
+	
+	map_data.markers = _get_markers_to_save()
+	
 	SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
 
 
@@ -171,3 +188,16 @@ func export_tilemap_to_png(world_tilemap: TileMapLayer, output_path: String):
 
 	# limpa
 	svc.queue_free()
+
+
+func _get_markers_to_save() -> Dictionary:
+	var result := {}
+	
+	for child: WorldMarker in markers.get_children():
+		var marker_data = {}
+		marker_data.global_position = child.global_position
+		marker_data.marker_name = child.marker_name
+		marker_data.marker_color = child.marker_color
+		marker_data.marker_description = child.marker_description
+		result[child.name] = marker_data
+	return result
