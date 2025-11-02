@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://dffrfxm63hfxn"]
+[gd_scene load_steps=8 format=3 uid="uid://dffrfxm63hfxn"]
 
 [ext_resource type="Script" uid="uid://dqxhk3ddif8rq" path="res://scenes/ui/hex_map_editor/hex_map_editor.gd" id="1_ov8ee"]
 [ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_r5cqj"]
 [ext_resource type="Script" uid="uid://drug3p4qtjwk" path="res://scenes/ui/hex_map_editor/camera_input.gd" id="3_n2lvb"]
+[ext_resource type="PackedScene" uid="uid://ughfgo3n08vh" path="res://scenes/entities/marker_preview/marker_preview.tscn" id="4_8fwno"]
 [ext_resource type="Script" uid="uid://hny0lij6a5dl" path="res://scenes/ui/hex_map_editor/map_data_manager.gd" id="4_u8lkl"]
+[ext_resource type="PackedScene" uid="uid://dwcsyy060sev0" path="res://scenes/entities/world_marker/world_marker.tscn" id="5_erscx"]
+[ext_resource type="Script" uid="uid://5mk43xuibhy0" path="res://scenes/ui/hex_map_editor/markers.gd" id="5_ttthk"]
 
 [node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas")]
 script = ExtResource("1_ov8ee")
@@ -14,7 +17,7 @@ tools_container = NodePath("CanvasLayer/ToolsContainer/Tools")
 map_name_input = NodePath("CanvasLayer/MapSettingsContainer/MapSettings/MapName")
 main_background = NodePath("MainBackground")
 camera = NodePath("Camera2D")
-main_panels = [NodePath("CanvasLayer/MapSettingsContainer"), NodePath("CanvasLayer/ToolsContainer")]
+main_panels = [NodePath("CanvasLayer/MapSettingsContainer"), NodePath("CanvasLayer/ToolsContainer"), NodePath("CanvasLayer/MarkerContainer")]
 world_tilemap = NodePath("World")
 decals_tilemap = NodePath("Decals")
 pencil_tilemap = NodePath("Pencil")
@@ -22,7 +25,35 @@ world_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection
 decals_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/DecalsLayerCheck")
 main_canvas = NodePath("CanvasLayer")
 metadata/_edit_vertical_guides_ = [959.0]
-metadata/_edit_horizontal_guides_ = [541.0]
+metadata/_edit_horizontal_guides_ = [541.0, 167.0]
+
+[node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas")]
+script = ExtResource("4_u8lkl")
+map_file_dialog = NodePath("../CanvasLayer/ToolsContainer/Tools/MapPathDialog")
+new_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/NewMapButton")
+save_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/SaveMapButton")
+load_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/LoadMapButton")
+export_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/ExportButton")
+map_name_input = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/MapName")
+main_canvas = NodePath("../CanvasLayer")
+
+[node name="Markers" type="Node" parent="." node_paths=PackedStringArray("editor", "close_data_container_button", "place_poi_button", "marker_data_container", "marker_name_input", "marker_description_input", "marker_color_input")]
+script = ExtResource("5_ttthk")
+marker_preview_scene = ExtResource("4_8fwno")
+world_marker_scene = ExtResource("5_erscx")
+editor = NodePath("..")
+close_data_container_button = NodePath("../CanvasLayer/MarkerContainer/MarkerData/CloseButton")
+place_poi_button = NodePath("../CanvasLayer/ToolsContainer/Tools/PlacePOI")
+marker_data_container = NodePath("../CanvasLayer/MarkerContainer")
+marker_name_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerName")
+marker_description_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerDescription")
+marker_color_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerColorPicker")
+
+[node name="CameraInput" type="Node" parent="." node_paths=PackedStringArray("editor", "target_camera", "main_canvas")]
+script = ExtResource("3_n2lvb")
+editor = NodePath("..")
+target_camera = NodePath("../Camera2D")
+main_canvas = NodePath("../CanvasLayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -100,6 +131,17 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
+[node name="TilesetPicker" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
+oversampling_override = 1.0
+title = "Open a File"
+file_mode = 0
+
+[node name="MapPathDialog" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
+oversampling_override = 1.0
+position = Vector2i(280, 190)
+access = 2
+use_native_dialog = true
+
 [node name="ToolsBackground" type="ColorRect" parent="CanvasLayer/ToolsContainer/Tools"]
 layout_mode = 1
 anchors_preset = 15
@@ -111,10 +153,14 @@ color = Color(0.055899993, 0.06701501, 0.13, 1)
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="TilesetPicker" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
-oversampling_override = 1.0
-title = "Open a File"
-file_mode = 0
+[node name="SectionTitle" type="Label" parent="CanvasLayer/ToolsContainer/Tools"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Tiles"
+horizontal_alignment = 1
 
 [node name="TilesetPickerButton" type="Button" parent="CanvasLayer/ToolsContainer/Tools"]
 layout_mode = 1
@@ -127,12 +173,6 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Pick a tileset"
 metadata/_edit_use_anchors_ = true
-
-[node name="MapPathDialog" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
-oversampling_override = 1.0
-position = Vector2i(280, 190)
-access = 2
-use_native_dialog = true
 
 [node name="TileSelection" type="Control" parent="CanvasLayer/ToolsContainer/Tools"]
 layout_mode = 1
@@ -171,10 +211,8 @@ columns = 5
 layout_mode = 0
 anchor_left = 0.2457627
 anchor_top = 0.72530866
-anchor_right = 0.5805085
-anchor_bottom = 0.8271605
-offset_right = -4.0
-offset_bottom = -26.0
+anchor_right = 0.56820077
+anchor_bottom = 0.7984312
 metadata/_edit_use_anchors_ = true
 
 [node name="WorldLayerCheck" type="CheckBox" parent="CanvasLayer/ToolsContainer/Tools/LayerSelection"]
@@ -186,19 +224,95 @@ text = "World"
 layout_mode = 2
 text = "Decals"
 
-[node name="Label" type="Label" parent="CanvasLayer/ToolsContainer/Tools"]
-layout_mode = 1
-anchors_preset = 10
+[node name="PlacePOI" type="Button" parent="CanvasLayer/ToolsContainer/Tools"]
+layout_mode = 0
+anchor_left = 0.092307694
+anchor_top = 0.8313076
+anchor_right = 0.9076923
+anchor_bottom = 0.88766116
+text = "Place Marker"
+metadata/_edit_use_anchors_ = true
+
+[node name="MarkerContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.83177084
+anchor_top = 0.15462963
 anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="MarkerData" type="Control" parent="CanvasLayer/MarkerContainer"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ToolsBackground" type="ColorRect" parent="CanvasLayer/MarkerContainer/MarkerData"]
+layout_mode = 0
+offset_right = 315.0
+offset_bottom = 905.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.055899993, 0.06701501, 0.13, 1)
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="SectionTitle" type="Label" parent="CanvasLayer/MarkerContainer/MarkerData"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -157.5
+offset_right = 157.5
 offset_bottom = 23.0
 grow_horizontal = 2
-text = "Tiles"
+text = "Marker Info"
 horizontal_alignment = 1
 
-[node name="CameraInput" type="Node" parent="." node_paths=PackedStringArray("editor", "target_camera")]
-script = ExtResource("3_n2lvb")
-editor = NodePath("..")
-target_camera = NodePath("../Camera2D")
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarkerContainer/MarkerData"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.026984127
+anchor_top = 0.058563534
+anchor_right = 0.97301584
+anchor_bottom = 0.94143647
+metadata/_edit_use_anchors_ = true
+
+[node name="MarkerNameLabel" type="Label" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
+layout_mode = 2
+text = "Marker Name"
+
+[node name="MarkerName" type="LineEdit" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Marker Name on map"
+
+[node name="MarkerDescriptionLabel" type="Label" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
+layout_mode = 2
+text = "Marker Description"
+
+[node name="MarkerDescription" type="TextEdit" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Place a public description here"
+
+[node name="MarkerColorPicker" type="ColorPicker" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer"]
+layout_mode = 2
+sampler_visible = false
+sliders_visible = false
+hex_visible = false
+
+[node name="CloseButton" type="Button" parent="CanvasLayer/MarkerContainer/MarkerData"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"
 
 [node name="MainBackground" type="ColorRect" parent="."]
 anchors_preset = 15
@@ -210,6 +324,7 @@ offset_right = 2426.3364
 offset_bottom = 1366.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0.103199996, 0.12372001, 0.24000001, 1)
 metadata/_edit_lock_ = true
 
@@ -223,13 +338,3 @@ tile_set = ExtResource("2_r5cqj")
 tile_set = ExtResource("2_r5cqj")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas")]
-script = ExtResource("4_u8lkl")
-map_file_dialog = NodePath("../CanvasLayer/ToolsContainer/Tools/MapPathDialog")
-new_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/NewMapButton")
-save_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/SaveMapButton")
-load_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/LoadMapButton")
-export_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/ExportButton")
-map_name_input = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/MapName")
-main_canvas = NodePath("../CanvasLayer")

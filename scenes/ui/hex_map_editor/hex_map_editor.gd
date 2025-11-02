@@ -15,6 +15,7 @@ enum MapLayer {
 @export var main_background: ColorRect
 @export var camera: Camera2D
 
+## Used to check if mouse is in UI
 @export var main_panels: Array[MarginContainer] 
 
 @export_group("Tilemaps")
@@ -46,14 +47,14 @@ func _ready() -> void:
 	# clear defaults
 	clear_maps()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	main_background.global_position = camera.get_screen_center_position() - main_background.get_rect().size / 2 # hacky to keep the background on screen but behind canvas layer
 	
 	pencil_tilemap.clear()
 	if current_selected_tile_coords != Vector2i(-1, -1):
 		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(get_global_mouse_position()), 0, current_selected_tile_coords)
 
-func _input(event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
 	
 	# Paint the map
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
@@ -73,6 +74,10 @@ func _input(event: InputEvent) -> void:
 
 	if Input.is_action_just_pressed("hide_ui"):
 		main_canvas.visible = !main_canvas.visible
+		
+	# handles focus from nodes
+	if Input.is_action_just_pressed("left_click") or Input.is_key_pressed(KEY_ESCAPE):
+		get_viewport().gui_release_focus()
 
 func _on_tileset_picker_button_pressed() -> void:
 	tileset_picker.show()
@@ -149,3 +154,10 @@ func is_mouse_on_tools() -> bool:
 			return true
 	
 	return false
+
+
+func deselect_current_pencil() -> void:
+	current_selected_tile_coords = Vector2i(-1, -1)
+
+func is_pencil_selected() -> bool:
+	return current_selected_tile_coords != Vector2i(-1, -1)

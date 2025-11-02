@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://ughfgo3n08vh"]
+
+[ext_resource type="Texture2D" uid="uid://c3ucqxh6oo3r5" path="res://assets/gfx/ui/icons/marker-stroked-svgrepo-com.svg" id="1_bia01"]
+[ext_resource type="Script" uid="uid://d04258bn7yo8o" path="res://scenes/entities/marker_preview/marker_preview.gd" id="2_57j4b"]
+
+[node name="MarkerPreview" type="Sprite2D"]
+scale = Vector2(0.0225, 0.02250001)
+texture = ExtResource("1_bia01")
+script = ExtResource("2_57j4b")
