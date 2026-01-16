@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dffrfxm63hfxn"]
+[gd_scene load_steps=9 format=3 uid="uid://dffrfxm63hfxn"]
 
 [ext_resource type="Script" uid="uid://dqxhk3ddif8rq" path="res://scenes/ui/hex_map_editor/hex_map_editor.gd" id="1_ov8ee"]
 [ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_r5cqj"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://hny0lij6a5dl" path="res://scenes/ui/hex_map_editor/map_data_manager.gd" id="4_u8lkl"]
 [ext_resource type="PackedScene" uid="uid://dwcsyy060sev0" path="res://scenes/entities/world_marker/world_marker.tscn" id="5_erscx"]
 [ext_resource type="Script" uid="uid://5mk43xuibhy0" path="res://scenes/ui/hex_map_editor/markers.gd" id="5_ttthk"]
+[ext_resource type="PackedScene" uid="uid://b36tetv3an26n" path="res://scenes/ui/tileset_picker_modal/tileset_picker_modal.tscn" id="7_11v6s"]
 
 [node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "camera_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas")]
 script = ExtResource("1_ov8ee")
@@ -325,6 +326,8 @@ offset_top = -31.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Close"
+
+[node name="TileSetPickerModal" parent="CanvasLayer" instance=ExtResource("7_11v6s")]
 
 [node name="MainBackground" type="ColorRect" parent="."]
 anchors_preset = 15

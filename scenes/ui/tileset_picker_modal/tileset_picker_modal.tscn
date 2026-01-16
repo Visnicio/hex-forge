@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://b36tetv3an26n"]
+
+[ext_resource type="Script" uid="uid://c561ar0ebo81v" path="res://scenes/ui/tileset_picker_modal/tileset_picker_modal.gd" id="1_7qfwj"]
+
+[node name="TileSetPickerModal" type="Control" node_paths=PackedStringArray("tileset_picker")]
+layout_mode = 3
+anchor_left = 0.34166667
+anchor_top = 0.31851852
+anchor_right = 0.65833336
+anchor_bottom = 0.6814815
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7qfwj")
+tileset_picker = NodePath("Select/TilesetPicker")
+metadata/_edit_use_anchors_ = true
+
+[node name="BG" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.011513158
+anchor_right = 0.9884868
+anchor_bottom = 0.05867347
+grow_horizontal = 2
+text = "Tilemap Config"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Select" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3289474
+anchor_top = 0.2015306
+anchor_right = 0.67105263
+anchor_bottom = 0.34948984
+offset_left = -1.5258789e-05
+offset_bottom = -1.5258789e-05
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_group_ = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="Select"]
+layout_mode = 2
+text = "TileSet File"
+
+[node name="TilesetPicker" type="OptionButton" parent="Select"]
+layout_mode = 2
