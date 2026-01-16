@@ -8,13 +8,14 @@
 [ext_resource type="PackedScene" uid="uid://dwcsyy060sev0" path="res://scenes/entities/world_marker/world_marker.tscn" id="5_erscx"]
 [ext_resource type="Script" uid="uid://5mk43xuibhy0" path="res://scenes/ui/hex_map_editor/markers.gd" id="5_ttthk"]
 
-[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas")]
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "camera_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas")]
 script = ExtResource("1_ov8ee")
 tileset_picker_button = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPickerButton")
 tileset_picker = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPicker")
 tiles_grid_container = NodePath("CanvasLayer/ToolsContainer/Tools/TileSelection/ScrollContainer/TilesContainer")
 tools_container = NodePath("CanvasLayer/ToolsContainer/Tools")
 map_name_input = NodePath("CanvasLayer/MapSettingsContainer/MapSettings/MapName")
+camera_input = NodePath("CameraInput")
 main_background = NodePath("MainBackground")
 camera = NodePath("Camera2D")
 main_panels = [NodePath("CanvasLayer/MapSettingsContainer"), NodePath("CanvasLayer/ToolsContainer"), NodePath("CanvasLayer/MarkerContainer")]
@@ -39,7 +40,7 @@ main_canvas = NodePath("../CanvasLayer")
 markers = NodePath("../Markers")
 world_marker_scene = ExtResource("5_erscx")
 
-[node name="Markers" type="Node" parent="." node_paths=PackedStringArray("editor", "close_data_container_button", "place_poi_button", "marker_data_container", "marker_name_input", "marker_description_input", "marker_color_input")]
+[node name="Markers" type="Node" parent="." node_paths=PackedStringArray("editor", "close_data_container_button", "place_poi_button", "marker_data_container", "marker_name_input", "marker_description_input", "marker_color_input", "delete_marker_button")]
 script = ExtResource("5_ttthk")
 marker_preview_scene = ExtResource("4_8fwno")
 world_marker_scene = ExtResource("5_erscx")
@@ -50,6 +51,7 @@ marker_data_container = NodePath("../CanvasLayer/MarkerContainer")
 marker_name_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerName")
 marker_description_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerDescription")
 marker_color_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerColorPicker")
+delete_marker_button = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/DeleteMarkerButton")
 
 [node name="CameraInput" type="Node" parent="." node_paths=PackedStringArray("editor", "target_camera", "main_canvas")]
 script = ExtResource("3_n2lvb")
@@ -137,6 +139,7 @@ metadata/_edit_use_anchors_ = true
 oversampling_override = 1.0
 title = "Open a File"
 file_mode = 0
+access = 1
 
 [node name="MapPathDialog" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
 oversampling_override = 1.0
@@ -207,7 +210,7 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-columns = 5
+columns = 6
 
 [node name="LayerSelection" type="VBoxContainer" parent="CanvasLayer/ToolsContainer/Tools"]
 layout_mode = 0

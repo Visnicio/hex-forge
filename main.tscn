@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://cv45u5rc2lx6p"]
+[gd_scene load_steps=3 format=3 uid="uid://cv45u5rc2lx6p"]
 
+[ext_resource type="Script" uid="uid://bwr7k0fuoi8lr" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dffrfxm63hfxn" path="res://scenes/ui/hex_map_editor/hex_map_editor.tscn" id="1_ig7tw"]
 
 [node name="Main" type="Node"]
+script = ExtResource("1_0xm2m")
 
 [node name="HexMapEditor" parent="." instance=ExtResource("1_ig7tw")]
 position = Vector2(-3, -2)

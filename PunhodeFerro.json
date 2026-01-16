@@ -30,19 +30,25 @@
 			}
 		}
 	},
-	"map_name": "Punho de Ferro - V2",
+	"map_name": "Iron Fist",
 	"markers": {
-		"Cabanas muito loucas": {
-			"global_position": "(-119.5, -64.02686)",
+		"Golden-eye Mercenaries": {
+			"global_position": "(-153.5, 112.75)",
 			"marker_color": "(0.8032, 0.5964, 0.642, 1.0)",
-			"marker_description": "",
-			"marker_name": "Cabanas muito loucas"
+			"marker_description": "Old mercenaries that the king likes",
+			"marker_name": "Golden-eye Mercenaries"
 		},
-		"Nova terra": {
-			"global_position": "(-23.0, 10.66945)",
-			"marker_color": "(1.0, 0.0, 0.0, 1.0)",
+		"Last Session endpoint": {
+			"global_position": "(-131.5, -39.25)",
+			"marker_color": "(1.0, 1.0, 1.0, 1.0)",
 			"marker_description": "",
-			"marker_name": "Nova terra"
+			"marker_name": "Last Session endpoint"
+		},
+		"Lost Iron Fist": {
+			"global_position": "(13.5, 44.75)",
+			"marker_color": "(1.0, 1.0, 1.0, 1.0)",
+			"marker_description": "",
+			"marker_name": "Lost Iron Fist"
 		}
 	},
 	"tileset_resource_path": "res://resources/tilesets/example_tileset.tres",

@@ -11,6 +11,7 @@ enum MapLayer {
 @export var tiles_grid_container: GridContainer
 @export var tools_container: Control
 @export var map_name_input: LineEdit
+@export var camera_input: CameraInput
 
 @export var main_background: ColorRect
 @export var camera: Camera2D
@@ -72,12 +73,16 @@ func _input(_event: InputEvent) -> void:
 		else:
 			decals_tilemap.set_cell(decals_tilemap.local_to_map(get_global_mouse_position()), 0, Vector2i(-1, -1))
 
-	if Input.is_action_just_pressed("hide_ui"):
+	if Input.is_action_just_pressed("hide_ui") and camera_input.ui_has_focus == false:
 		main_canvas.visible = !main_canvas.visible
 		
 	# handles focus from nodes
 	if Input.is_action_just_pressed("left_click") or Input.is_key_pressed(KEY_ESCAPE):
 		get_viewport().gui_release_focus()
+		
+	# deselect current pencil on esc
+	if Input.is_key_pressed(KEY_ESCAPE) and current_selected_tile_coords != Vector2i(-1, -1):
+		deselect_current_pencil()
 
 func _on_tileset_picker_button_pressed() -> void:
 	tileset_picker.show()

@@ -30,11 +30,7 @@ func _ready() -> void:
 		export_tilemap_to_png(editor.world_tilemap, "res://test.png")
 		)
 	
-	new_map_button.pressed.connect(func():
-		editor.clear_maps()
-		for child in editor.tiles_grid_container.get_children():
-			child.queue_free()
-		)
+	new_map_button.pressed.connect(_on_new_map_pressed)
 	
 	load_map_button.pressed.connect(func():
 		current_state = State.LOADING
@@ -60,7 +56,14 @@ func _input(event: InputEvent) -> void:
 			map_file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 			map_file_dialog.show()
 
-	
+
+func _on_new_map_pressed() -> void:
+	editor.clear_maps()
+	for child in editor.tiles_grid_container.get_children():
+		child.queue_free()
+	markers.clear_all_markers()
+
+
 func on_file_selected(map_path: String) -> void:
 	if current_state == State.SAVING:
 		save_current_map(map_path)
@@ -71,6 +74,7 @@ func on_file_selected(map_path: String) -> void:
 
 func load_map_into_editor(map_path: String) -> void:
 	editor.clear_maps()
+	markers.clear_all_markers()
 	for child in editor.tiles_grid_container.get_children():
 		child.queue_free()
 	
@@ -194,10 +198,11 @@ func _get_markers_to_save() -> Dictionary:
 	var result := {}
 	
 	for child: WorldMarker in markers.get_children():
-		var marker_data = {}
-		marker_data.global_position = child.global_position
-		marker_data.marker_name = child.marker_name
-		marker_data.marker_color = child.marker_color
-		marker_data.marker_description = child.marker_description
-		result[child.name] = marker_data
+		if child is WorldMarker:
+			var marker_data = {}
+			marker_data.global_position = child.global_position
+			marker_data.marker_name = child.marker_name
+			marker_data.marker_color = child.marker_color
+			marker_data.marker_description = child.marker_description
+			result[child.name] = marker_data
 	return result

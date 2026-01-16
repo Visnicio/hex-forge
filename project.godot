@@ -11,9 +11,10 @@ config_version=5
 [application]
 
 config/name="an_actual_useful_hex_mapper"
+config/version="Alpha"
 run/main_scene="uid://cv45u5rc2lx6p"
 config/features=PackedStringArray("4.5", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://bh8kr8lphc3iv"
 
 [autoload]
 
