@@ -1,0 +1,441 @@
+{
+	"decals_map": {
+		"cells": {
+
+		}
+	},
+	"map_name": "MapName",
+	"markers": {
+
+	},
+	"tileset_config_file": "res://resources/definitions/tilesets/david_baumgart_sample.json",
+	"tileset_resource_path": "res://resources/tilesets/david_baumgart_sample.tres",
+	"world_map": {
+		"cells": {
+			"(-6, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 7)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-5, 8)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-4, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-4, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 7)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-4, 8)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-3, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-3, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 7)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-3, 8)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-2, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-2, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-2, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-2, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-2, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(-2, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(-2, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(-2, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-2, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-2, 7)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-2, 8)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-1, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(-1, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-1, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-1, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-1, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(-1, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(-1, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(-1, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-1, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 22
+			},
+			"(-1, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-1, 7)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(-1, 8)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(0, -4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(0, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(0, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(0, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(0, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(0, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 8
+			},
+			"(0, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 19
+			},
+			"(0, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 18
+			},
+			"(0, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(0, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(0, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(0, 7)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(1, -4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(1, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(1, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(1, 6)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(2, -4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(2, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(2, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(2, 5)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(3, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(3, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(3, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(3, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(3, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(3, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(3, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(3, 4)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(4, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(4, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(4, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(4, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(4, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(4, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 10
+			},
+			"(4, 3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(5, -3)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(5, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(5, -1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(5, 0)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(5, 1)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(5, 2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			},
+			"(6, -2)": {
+				"atlas_coords": "(0, 0)",
+				"source_id": 9
+			}
+		}
+	}
+}

@@ -3,22 +3,35 @@
 ## reads custom tilesets configs from user://
 class_name TileSetPickerModal extends Control
 
-signal config_changed
+## Use new_tileset to query on TileSetPickerModal.tilesets keys
+signal config_changed(new_tileset: String)
 var tilesets: Dictionary[String, Dictionary] = {}
 
 @export var tileset_picker: OptionButton
 
 func _ready() -> void:
+	hide()
 	load_first_party_tilesets()
-	
+	tileset_picker.add_item("None")
 	for tileset_name in tilesets.keys():
 		tileset_picker.add_item(tileset_name)
+		
+	tileset_picker.item_selected.connect(func(index: int):
+		var selected_title = tileset_picker.get_item_text(index)
+		if tilesets.has(selected_title):
+			config_changed.emit(selected_title)
+		else:
+			config_changed.emit("None")
+		hide()
+	)
+	
+	$Close.pressed.connect(func():
+		hide()
+		)
 
 
 func load_first_party_tilesets() -> void:
-	var items: Array[Resource] = []
-	
-	var tilesets_dir: String = "res://resources/tilesets"
+	var tilesets_dir: String = "res://resources/definitions/tilesets"
 	var dir = DirAccess.open(tilesets_dir)
 	if not dir:
 		push_error("Could not find tilesets dir")
@@ -32,21 +45,29 @@ func load_first_party_tilesets() -> void:
 			# Remove .remap extension if present
 			if full_path.ends_with(".remap"):
 				full_path = full_path.substr(0, full_path.length() - 6)
-
-			if ResourceLoader.exists(full_path):
-				var res = ResourceLoader.load(full_path)
-				if res:
-					items.append(res)
-				else:
-					push_error("Failed to load resource: ", full_path)
+			
+			var file_access = FileAccess.open(full_path, FileAccess.READ)
+			if file_access == null:
+				printerr("Error while trying to open file ", full_path)
+				return
+			var json_text = file_access.get_as_text()
+			file_access.close()
+			
+			var json = JSON.new()
+			var result = json.parse(json_text)
+			if result == OK:
+				var data = json.data
+				print("Loaded ", json.data.title)
+				tilesets[data.title] = {
+					"tileset_resource": data.tileset_resource,
+					"tilemap_scale": data.tilemap_scale,
+					"file_name": file_name,
+					"file_path": full_path
+				}
 			else:
-				push_error("Resource does not exist: ", full_path)
+				push_error("Error parsing save file JSON")
+				#return {}
+
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	
-	for resource: Resource in items:
-		if resource is TileSet:
-			tilesets[resource.resource_name] = {
-				"resource": resource,
-				"path": resource.resource_path
-			}

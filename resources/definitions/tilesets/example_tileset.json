@@ -1,0 +1,5 @@
+{
+	"title": "Example Tileset",
+	"tileset_resource": "res://resources/tilesets/example_tileset.tres",
+	"tilemap_scale": 1
+}

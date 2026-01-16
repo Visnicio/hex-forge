@@ -7,7 +7,6 @@ enum MapLayer {
 }
 
 @export var tileset_picker_button: Button
-@export var tileset_picker: FileDialog
 @export var tiles_grid_container: GridContainer
 @export var tools_container: Control
 @export var map_name_input: LineEdit
@@ -30,20 +29,31 @@ enum MapLayer {
 
 @export_group("UI")
 @export var main_canvas: CanvasLayer
+@export var tileset_picker_modal: TileSetPickerModal
 
 
 ## Holds the coords for the current selected tile to query it on the tileset, set it to (-1,-1) to clear the pencil
 var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
+var current_selected_tile_source_id: int = -1
 
 var current_layer_selected: MapLayer = MapLayer.WORLD
+
+var current_tileset_config_file: String = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	tileset_picker_button.pressed.connect(_on_tileset_picker_button_pressed)
-	tileset_picker.file_selected.connect(_on_tileset_selected)
 	
 	world_layer_checkbox.pressed.connect(_on_world_layer_check_pressed)
 	decals_layer_checkbox.pressed.connect(_on_decal_layer_check_pressed)
+	
+	tileset_picker_modal.config_changed.connect(func(new_tileset: String):
+		if tileset_picker_modal.tilesets.has(new_tileset):
+			var data = tileset_picker_modal.tilesets[new_tileset]
+			print(data)
+			current_tileset_config_file = data.file_path
+			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource, data)
+		)
 	
 	# clear defaults
 	clear_maps()
@@ -52,8 +62,9 @@ func _process(_delta: float) -> void:
 	main_background.global_position = camera.get_screen_center_position() - main_background.get_rect().size / 2 # hacky to keep the background on screen but behind canvas layer
 	
 	pencil_tilemap.clear()
-	if current_selected_tile_coords != Vector2i(-1, -1):
-		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(get_global_mouse_position()), 0, current_selected_tile_coords)
+	if current_selected_tile_coords != Vector2i(-1, -1) and current_selected_tile_source_id != -1:
+		var mouse_pos = pencil_tilemap.to_local(get_global_mouse_position())
+		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
 
 func _input(_event: InputEvent) -> void:
 	
@@ -62,16 +73,20 @@ func _input(_event: InputEvent) -> void:
 	var is_something_selected: bool = current_selected_tile_coords != Vector2i(-1, -1)
 	if Input.is_action_pressed("left_click") and is_something_selected and !is_mouse_on_tools() and !is_typing_name:
 		if current_layer_selected == MapLayer.WORLD:
-			world_tilemap.set_cell(world_tilemap.local_to_map(get_global_mouse_position()), 0, current_selected_tile_coords)
+			var mouse_pos = world_tilemap.to_local(get_global_mouse_position())
+			world_tilemap.set_cell(world_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
 		else:
-			decals_tilemap.set_cell(decals_tilemap.local_to_map(get_global_mouse_position()), 0, current_selected_tile_coords)
+			var mouse_pos = decals_tilemap.to_local(get_global_mouse_position())
+			decals_tilemap.set_cell(decals_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
 	
 	# erase the world
 	if Input.is_action_pressed("right_click") and current_selected_tile_coords != Vector2i(-1, -1):
 		if current_layer_selected == MapLayer.WORLD:
-			world_tilemap.set_cell(world_tilemap.local_to_map(get_global_mouse_position()), 0, Vector2i(-1, -1))
+			var mouse_pos = world_tilemap.to_local(get_global_mouse_position())
+			world_tilemap.set_cell(world_tilemap.local_to_map(mouse_pos), 0, Vector2i(-1, -1))
 		else:
-			decals_tilemap.set_cell(decals_tilemap.local_to_map(get_global_mouse_position()), 0, Vector2i(-1, -1))
+			var mouse_pos = decals_tilemap.to_local(get_global_mouse_position())
+			decals_tilemap.set_cell(decals_tilemap.local_to_map(mouse_pos), 0, Vector2i(-1, -1))
 
 	if Input.is_action_just_pressed("hide_ui") and camera_input.ui_has_focus == false:
 		main_canvas.visible = !main_canvas.visible
@@ -85,53 +100,70 @@ func _input(_event: InputEvent) -> void:
 		deselect_current_pencil()
 
 func _on_tileset_picker_button_pressed() -> void:
-	tileset_picker.show()
+	tileset_picker_modal.show()
 
 
-func _on_tileset_selected(selected_file_path: String) -> void:
-	load_tileset_for_map(selected_file_path)
-
-
-func _create_tile_button(button_texture: Texture2D, buttons_container: GridContainer, original_tile_coords: Vector2i) -> void:
+func _create_tile_button(button_texture: Texture2D, buttons_container: GridContainer, original_tile_coords: Vector2i, tile_source_id: int) -> void:
 	var new_button: TextureButton = TextureButton.new()
 	new_button.texture_normal = button_texture
+	new_button.ignore_texture_size = true
+	new_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	new_button.custom_minimum_size = Vector2(64, 64) 
 	
 	new_button.pressed.connect(func():
 		current_selected_tile_coords = original_tile_coords
-		)
+		current_selected_tile_source_id = tile_source_id
+		print("pressed button: ", original_tile_coords)
+	)
 	
 	buttons_container.add_child(new_button)
 
 
-func load_tileset_for_map(tileset_resource_path: String) -> void:
+func load_tileset_for_map(tileset_resource_path: String, tileset_config_data: Dictionary) -> void:
+	deselect_current_pencil()
+	for child in tiles_grid_container.get_children():
+		child.queue_free()
+	
 	# load the tileset
 	var loaded_tileset: TileSet = load(tileset_resource_path)
 	pencil_tilemap.tile_set = loaded_tileset
 	world_tilemap.tile_set = loaded_tileset
 	decals_tilemap.tile_set = loaded_tileset
 	
+	if tileset_config_data != null: # retro compatible with older saves
+		if tileset_config_data.has("tilemap_scale"):
+			pencil_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
+			world_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
+			world_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
+		else:
+			pencil_tilemap.scale = Vector2.ONE
+			world_tilemap.scale = Vector2.ONE
+			world_tilemap.scale = Vector2.ONE
+	
 	#get its source
-	var tileset_source: TileSetSource = loaded_tileset.get_source(0)
-	
-	var rows: int = tileset_source.get_atlas_grid_size().y
-	# but it is 1-indexed, so I need to subtract -1 to query i coords
-	var cols: int = tileset_source.get_atlas_grid_size().x
-	
-	if tileset_source is TileSetAtlasSource: # if selected is a source
-		for row in rows:
-			for col in cols:
-				var tile_coord: Vector2i = Vector2i(col, row)
-				
-				# for each tile in tileset, check if its set to usable
-				if !tileset_source.has_tile(tile_coord): continue
-				
-				# creates a new atlas to hold the tile texture
-				var atlas: AtlasTexture = AtlasTexture.new()
-				atlas.atlas = tileset_source.texture
-				atlas.region = tileset_source.get_tile_texture_region(tile_coord)
-				
-				# creates the button
-				_create_tile_button(atlas, tiles_grid_container, tile_coord)
+	for i: int in loaded_tileset.get_source_count():
+		var tileset_source: TileSetSource = loaded_tileset.get_source(i)
+		if tileset_source == null: continue
+		
+		var rows: int = tileset_source.get_atlas_grid_size().y
+		# but it is 1-indexed, so I need to subtract -1 to query i coords
+		var cols: int = tileset_source.get_atlas_grid_size().x
+		
+		if tileset_source is TileSetAtlasSource: # if selected is a source
+			for row in rows:
+				for col in cols:
+					var tile_coord: Vector2i = Vector2i(col, row)
+					
+					# for each tile in tileset, check if its set to usable
+					if !tileset_source.has_tile(tile_coord): continue
+					
+					# creates a new atlas to hold the tile texture
+					var atlas: AtlasTexture = AtlasTexture.new()
+					atlas.atlas = tileset_source.texture
+					atlas.region = tileset_source.get_tile_texture_region(tile_coord)
+					
+					# creates the button
+					_create_tile_button(atlas, tiles_grid_container, tile_coord, i)
 
 
 func clear_maps() -> void:

@@ -66,7 +66,7 @@ func _on_new_map_pressed() -> void:
 
 func on_file_selected(map_path: String) -> void:
 	if current_state == State.SAVING:
-		save_current_map(map_path)
+		save_current_map(map_path, editor.current_tileset_config_file)
 		
 	elif current_state == State.LOADING:
 		load_map_into_editor(map_path);
@@ -80,20 +80,29 @@ func load_map_into_editor(map_path: String) -> void:
 	
 	var map_data: Dictionary = SaveManager.load_map(map_path)
 	map_name_input.text = map_data.get("map_name", "No Name Saved")
-	editor.load_tileset_for_map(map_data.get("tileset_resource_path"))
+	var map_config_data = {}
+	if map_data.has("tileset_config_file"):
+		map_config_data = Utils.get_json_data(map_data.get("tileset_config_file")) 
+	editor.load_tileset_for_map(map_data.get("tileset_resource_path"), map_config_data)
 	
 	# load world map
 	for cell_data_key: String in map_data.world_map.cells.keys():
 		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
 		var cell_data: Dictionary = map_data.world_map.cells[cell_data_key]
-		editor.world_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
+		var source_id: int = 0
+		if cell_data.has("source_id"): # Retro Compatible with older saves
+			source_id = cell_data.get("source_id")
+		editor.world_tilemap.set_cell(key_as_vector, source_id, str_to_var("Vector2i"+cell_data.atlas_coords))
 	
 	# load decals map
 	if !map_data.has("decals_map"): return
 	for cell_data_key: String in map_data.decals_map.cells.keys():
 		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
 		var cell_data: Dictionary = map_data.decals_map.cells[cell_data_key]
-		editor.decals_tilemap.set_cell(key_as_vector, 0, str_to_var("Vector2i"+cell_data.atlas_coords))
+		var source_id: int = 0
+		if cell_data.has("source_id"): # Retro Compatible with older saves
+			source_id = cell_data.get("source_id")
+		editor.decals_tilemap.set_cell(key_as_vector, source_id, str_to_var("Vector2i"+cell_data.atlas_coords))
 	
 	# load markers
 	if map_data.has("markers"):
@@ -107,7 +116,7 @@ func load_map_into_editor(map_path: String) -> void:
 	
 	last_map_loaded_path = map_path
 
-func save_current_map(map_path: String) -> void:
+func save_current_map(map_path: String, tileset_config_file: String) -> void:
 	var map_data = {}
 	
 	map_data.world_map = {}
@@ -119,18 +128,22 @@ func save_current_map(map_path: String) -> void:
 	# Create the .cells  key is cell_coord and value is dictionary
 	for cell_coord: Vector2i in editor.world_tilemap.get_used_cells(): # loop for the used cells to create the cell data to save
 		map_data.world_map.cells[cell_coord] = {
-			"atlas_coords": editor.world_tilemap.get_cell_atlas_coords(cell_coord)
+			"atlas_coords": editor.world_tilemap.get_cell_atlas_coords(cell_coord),
+			"source_id": editor.world_tilemap.get_cell_source_id(cell_coord)
 		}
 	
 	for cell_coord: Vector2i in editor.decals_tilemap.get_used_cells(): # loop for the used cells to create the cell data to save
 		map_data.decals_map.cells[cell_coord] = {
-			"atlas_coords": editor.decals_tilemap.get_cell_atlas_coords(cell_coord)
+			"atlas_coords": editor.decals_tilemap.get_cell_atlas_coords(cell_coord),
+			"source_id": editor.decals_tilemap.get_cell_source_id(cell_coord)
 		}
 	
 	map_data.map_name = map_name_input.text
 	map_data.tileset_resource_path = editor.world_tilemap.tile_set.resource_path
 	
 	map_data.markers = _get_markers_to_save()
+	
+	map_data.tileset_config_file = tileset_config_file
 	
 	SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
 

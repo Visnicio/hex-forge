@@ -9,10 +9,9 @@
 [ext_resource type="Script" uid="uid://5mk43xuibhy0" path="res://scenes/ui/hex_map_editor/markers.gd" id="5_ttthk"]
 [ext_resource type="PackedScene" uid="uid://b36tetv3an26n" path="res://scenes/ui/tileset_picker_modal/tileset_picker_modal.tscn" id="7_11v6s"]
 
-[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tileset_picker", "tiles_grid_container", "tools_container", "map_name_input", "camera_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas")]
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tiles_grid_container", "tools_container", "map_name_input", "camera_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas", "tileset_picker_modal")]
 script = ExtResource("1_ov8ee")
 tileset_picker_button = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPickerButton")
-tileset_picker = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPicker")
 tiles_grid_container = NodePath("CanvasLayer/ToolsContainer/Tools/TileSelection/ScrollContainer/TilesContainer")
 tools_container = NodePath("CanvasLayer/ToolsContainer/Tools")
 map_name_input = NodePath("CanvasLayer/MapSettingsContainer/MapSettings/MapName")
@@ -26,6 +25,7 @@ pencil_tilemap = NodePath("Pencil")
 world_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/WorldLayerCheck")
 decals_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/DecalsLayerCheck")
 main_canvas = NodePath("CanvasLayer")
+tileset_picker_modal = NodePath("CanvasLayer/TileSetPickerModal")
 metadata/_edit_vertical_guides_ = [959.0]
 metadata/_edit_horizontal_guides_ = [541.0, 167.0]
 
@@ -136,12 +136,6 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="TilesetPicker" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
-oversampling_override = 1.0
-title = "Open a File"
-file_mode = 0
-access = 1
-
 [node name="MapPathDialog" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
 oversampling_override = 1.0
 position = Vector2i(280, 190)
@@ -211,7 +205,7 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-columns = 6
+columns = 4
 
 [node name="LayerSelection" type="VBoxContainer" parent="CanvasLayer/ToolsContainer/Tools"]
 layout_mode = 0

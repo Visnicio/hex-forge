@@ -53,3 +53,11 @@ text = "TileSet File"
 
 [node name="TilesetPicker" type="OptionButton" parent="Select"]
 layout_mode = 2
+
+[node name="Close" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 0.94736844
+anchor_right = 1.0032895
+anchor_bottom = 0.07908163
+text = "X"
+metadata/_edit_use_anchors_ = true
