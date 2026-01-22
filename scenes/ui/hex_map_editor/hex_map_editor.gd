@@ -83,32 +83,31 @@ func _process(_delta: float) -> void:
 		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
 
 func _input(event: InputEvent) -> void:
-	# 1. Check basic states (mouse on tools, typing, etc.)
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
 	if is_mouse_on_tools() or is_typing_name or current_selected_tile_coords == Vector2i(-1, -1):
 		return
+	else:
+		# --- Painting Logic (Left Button) ---
+		if Input.is_action_just_pressed("left_click"):
+			_start_stroke()
+			_paint_at_mouse() # Paint the first tile (single click)
+		
+		elif Input.is_action_pressed("left_click") and _is_painting:
+			_paint_at_mouse() # Paint while dragging
+			
+		elif Input.is_action_just_released("left_click") and _is_painting:
+			_commit_stroke("Add Tile", false) # Finish and save to UndoRedo
 
-	# --- Painting Logic (Left Button) ---
-	if Input.is_action_just_pressed("left_click"):
-		_start_stroke()
-		_paint_at_mouse() # Paint the first tile (single click)
-	
-	elif Input.is_action_pressed("left_click") and _is_painting:
-		_paint_at_mouse() # Paint while dragging
-		
-	elif Input.is_action_just_released("left_click") and _is_painting:
-		_commit_stroke("Add Tile", false) # Finish and save to UndoRedo
-
-	# --- Erasing Logic (Right Button) ---
-	if Input.is_action_just_pressed("right_click"):
-		_start_stroke()
-		_erase_at_mouse()
-		
-	elif Input.is_action_pressed("right_click") and _is_painting:
-		_erase_at_mouse()
-		
-	elif Input.is_action_just_released("right_click") and _is_painting:
-		_commit_stroke("Remove Tile", true)
+		# --- Erasing Logic (Right Button) ---
+		if Input.is_action_just_pressed("right_click"):
+			_start_stroke()
+			_erase_at_mouse()
+			
+		elif Input.is_action_pressed("right_click") and _is_painting:
+			_erase_at_mouse()
+			
+		elif Input.is_action_just_released("right_click") and _is_painting:
+			_commit_stroke("Remove Tile", true)
 
 	# --- Undo / Redo ---
 	if Input.is_action_just_pressed("redo"):
@@ -233,25 +232,20 @@ func _start_stroke():
 func _paint_at_mouse():
 	var mouse_pos = current_selected_layer.local_to_map(world_tilemap.to_local(get_global_mouse_position()))
 	
-	# Optimization: If we already painted this tile IN THIS STROKE with the SAME value, ignore
 	var current_source = current_selected_layer.get_cell_source_id(mouse_pos)
 	var current_atlas = current_selected_layer.get_cell_atlas_coords(mouse_pos)
 	
-	# If the tile is already what we want to paint, return
 	if current_source == current_selected_tile_source_id and current_atlas == current_selected_tile_coords:
 		return
 
-	# Save the OLD tile state (for Undo) if we haven't saved it in this stroke yet
 	if not _current_stroke_buffer.has(mouse_pos):
 		_current_stroke_buffer[mouse_pos] = {
 			"source": current_source,
 			"atlas": current_atlas
 		}
 	
-	# Apply the change visually NOW (without waiting for undo_redo)
 	current_selected_layer.set_cell(mouse_pos, current_selected_tile_source_id, current_selected_tile_coords)
 
-# Erase visually and store state
 func _erase_at_mouse():
 	var mouse_pos = current_selected_layer.local_to_map(world_tilemap.to_local(get_global_mouse_position()))
 	
@@ -266,7 +260,6 @@ func _erase_at_mouse():
 		
 	current_selected_layer.set_cell(mouse_pos, -1, Vector2i(-1, -1))
 
-# Finalizes the stroke and creates the UndoRedo action
 func _commit_stroke(action_name: String, is_erasing: bool):
 	_is_painting = false
 	
@@ -275,18 +268,14 @@ func _commit_stroke(action_name: String, is_erasing: bool):
 		
 	undo_redo.create_action(action_name)
 	
-	# DO METHOD: Redo what we just painted
-	# Since we already painted visually, the 'redo' needs to ensure it stays painted
 	for cell_pos in _current_stroke_buffer.keys():
 		if is_erasing:
 			undo_redo.add_do_method(current_selected_layer.set_cell.bind(cell_pos, -1, Vector2i(-1, -1)))
 		else:
 			undo_redo.add_do_method(current_selected_layer.set_cell.bind(cell_pos, current_selected_tile_source_id, current_selected_tile_coords))
 			
-	# UNDO METHOD: Restore what was in the buffer
 	for cell_pos in _current_stroke_buffer.keys():
 		var old_data = _current_stroke_buffer[cell_pos]
 		undo_redo.add_undo_method(current_selected_layer.set_cell.bind(cell_pos, old_data["source"], old_data["atlas"]))
 		
-	# Commit the action. No need to execute (false) because we already visually changed it during input.
 	undo_redo.commit_action(false)
