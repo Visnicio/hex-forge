@@ -34,11 +34,15 @@ enum MapLayer {
 
 ## Holds the coords for the current selected tile to query it on the tileset, set it to (-1,-1) to clear the pencil
 var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
+## current tile source id in case the tileset has more than one souce
 var current_selected_tile_source_id: int = -1
-
-var current_layer_selected: MapLayer = MapLayer.WORLD
-
+## Current TileMapLayer selected
+var current_selected_layer: TileMapLayer
+## current tileset config file, ex: "res://resources/definitions/tilesets/example_tileset.json"
 var current_tileset_config_file: String = ""
+
+## Used for registering last actions by user so we can undo
+var undo_redo = UndoRedo.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -54,6 +58,8 @@ func _ready() -> void:
 			current_tileset_config_file = data.file_path
 			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource, data)
 		)
+	
+	current_selected_layer = world_tilemap
 	
 	# clear defaults
 	clear_maps()
@@ -72,21 +78,37 @@ func _input(_event: InputEvent) -> void:
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
 	var is_something_selected: bool = current_selected_tile_coords != Vector2i(-1, -1)
 	if Input.is_action_pressed("left_click") and is_something_selected and !is_mouse_on_tools() and !is_typing_name:
-		if current_layer_selected == MapLayer.WORLD:
-			var mouse_pos = world_tilemap.to_local(get_global_mouse_position())
-			world_tilemap.set_cell(world_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
-		else:
-			var mouse_pos = decals_tilemap.to_local(get_global_mouse_position())
-			decals_tilemap.set_cell(decals_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
+		var mouse_pos = current_selected_layer.local_to_map(world_tilemap.to_local(get_global_mouse_position()))
+		# get current tile to pass to undo
+		var old_tile_coords = current_selected_layer.get_cell_atlas_coords(mouse_pos)
+		var old_source_id = current_selected_layer.get_cell_source_id(mouse_pos)
+		# avoids creating same tile if holding pincel to not send trash data to undo_redo
+		if old_tile_coords == current_selected_tile_coords:
+			return
+		undo_redo.create_action("Add Tile")
+		undo_redo.add_do_method(current_selected_layer.set_cell.bind(mouse_pos, current_selected_tile_source_id, current_selected_tile_coords))
+		undo_redo.add_undo_method(current_selected_layer.set_cell.bind(mouse_pos, old_source_id, old_tile_coords))
+		# if first click, create action, otherwise, merge with last action created
+		undo_redo.commit_action(false if Input.is_action_just_pressed("left_click") else true)
 	
 	# erase the world
 	if Input.is_action_pressed("right_click") and current_selected_tile_coords != Vector2i(-1, -1):
-		if current_layer_selected == MapLayer.WORLD:
-			var mouse_pos = world_tilemap.to_local(get_global_mouse_position())
-			world_tilemap.set_cell(world_tilemap.local_to_map(mouse_pos), 0, Vector2i(-1, -1))
-		else:
-			var mouse_pos = decals_tilemap.to_local(get_global_mouse_position())
-			decals_tilemap.set_cell(decals_tilemap.local_to_map(mouse_pos), 0, Vector2i(-1, -1))
+		var mouse_pos = current_selected_layer.local_to_map(world_tilemap.to_local(get_global_mouse_position()))
+		# Gets whats in the map
+		var old_tile_coords = current_selected_layer.get_cell_atlas_coords(mouse_pos)
+		var old_source_id = current_selected_layer.get_cell_source_id(mouse_pos)
+		# if theres nothing, theres nothing to do
+		if old_tile_coords == Vector2i(-1, -1):
+			return
+		undo_redo.create_action("Remove Tile")
+		undo_redo.add_do_method(current_selected_layer.set_cell.bind(mouse_pos, -1, Vector2i(-1, -1))) # how to erase
+		undo_redo.add_undo_method(current_selected_layer.set_cell.bind(mouse_pos, old_source_id, old_tile_coords)) # how to un-erase
+		undo_redo.commit_action(false if Input.is_action_just_pressed("right_click") else true)
+	
+	# Undo
+	if Input.is_action_pressed("undo"):
+		print(undo_redo.get_history_count())
+		undo_redo.undo()
 
 	if Input.is_action_just_pressed("hide_ui") and camera_input.ui_has_focus == false:
 		main_canvas.visible = !main_canvas.visible
@@ -176,13 +198,12 @@ func clear_maps() -> void:
 
 
 func _on_world_layer_check_pressed() -> void:
-	current_layer_selected = MapLayer.WORLD
 	decals_layer_checkbox.button_pressed = false
+	current_selected_layer = world_tilemap
 
 func _on_decal_layer_check_pressed() -> void:
-	current_layer_selected = MapLayer.DECAL
 	world_layer_checkbox.button_pressed = false
-
+	current_selected_layer = decals_tilemap
 
 func is_mouse_on_tools() -> bool:
 	

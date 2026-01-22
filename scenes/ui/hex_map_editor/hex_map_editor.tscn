@@ -348,3 +348,5 @@ tile_set = ExtResource("2_r5cqj")
 tile_set = ExtResource("2_r5cqj")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="UserLayers" type="Node" parent="."]
