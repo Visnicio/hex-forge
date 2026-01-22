@@ -106,7 +106,9 @@ func _input(_event: InputEvent) -> void:
 		undo_redo.commit_action(false if Input.is_action_just_pressed("right_click") else true)
 	
 	# Undo
-	if Input.is_action_pressed("undo"):
+	if Input.is_action_just_pressed("redo"):
+		undo_redo.redo()
+	elif Input.is_action_just_pressed("undo"):
 		print(undo_redo.get_history_count())
 		undo_redo.undo()
 
