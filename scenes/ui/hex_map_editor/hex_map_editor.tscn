@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dffrfxm63hfxn"]
+[gd_scene load_steps=11 format=3 uid="uid://dffrfxm63hfxn"]
 
 [ext_resource type="Script" uid="uid://dqxhk3ddif8rq" path="res://scenes/ui/hex_map_editor/hex_map_editor.gd" id="1_ov8ee"]
 [ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_r5cqj"]
@@ -7,31 +7,35 @@
 [ext_resource type="Script" uid="uid://hny0lij6a5dl" path="res://scenes/ui/hex_map_editor/map_data_manager.gd" id="4_u8lkl"]
 [ext_resource type="PackedScene" uid="uid://dwcsyy060sev0" path="res://scenes/entities/world_marker/world_marker.tscn" id="5_erscx"]
 [ext_resource type="Script" uid="uid://5mk43xuibhy0" path="res://scenes/ui/hex_map_editor/markers.gd" id="5_ttthk"]
+[ext_resource type="PackedScene" uid="uid://1ucpsbaewmj0" path="res://scenes/ui/layer_checkbox_container/layer_checkbox_container.tscn" id="7_2k2fi"]
 [ext_resource type="PackedScene" uid="uid://b36tetv3an26n" path="res://scenes/ui/tileset_picker_modal/tileset_picker_modal.tscn" id="7_11v6s"]
+[ext_resource type="PackedScene" uid="uid://doqcp1ne1qjwu" path="res://scenes/ui/controls_and_info_modal/controls_and_info_modal.tscn" id="9_q5rbk"]
 
-[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tiles_grid_container", "tools_container", "map_name_input", "camera_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas", "tileset_picker_modal")]
+[node name="HexMapEditor" type="Node2D" node_paths=PackedStringArray("tileset_picker_button", "tiles_grid_container", "tools_container", "map_name_input", "camera_input", "main_background", "camera", "main_panels", "world_tilemap", "decals_tilemap", "pencil_tilemap", "world_layer_checkbox", "decals_layer_checkbox", "main_canvas", "tileset_picker_modal", "controls_button", "controls_panel")]
 script = ExtResource("1_ov8ee")
-tileset_picker_button = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPickerButton")
-tiles_grid_container = NodePath("CanvasLayer/ToolsContainer/Tools/TileSelection/ScrollContainer/TilesContainer")
-tools_container = NodePath("CanvasLayer/ToolsContainer/Tools")
+tileset_picker_button = NodePath("CanvasLayer/Sidebar/Tools/TilesetPickerButton")
+tiles_grid_container = NodePath("CanvasLayer/Sidebar/Tools/TileSelection/ScrollContainer/TilesContainer")
+tools_container = NodePath("CanvasLayer/Sidebar/Tools")
 map_name_input = NodePath("CanvasLayer/TopBar/MapSettings/MapName")
 camera_input = NodePath("CameraInput")
 main_background = NodePath("MainBackground")
 camera = NodePath("Camera2D")
-main_panels = [NodePath("CanvasLayer/TopBar"), NodePath("CanvasLayer/ToolsContainer"), NodePath("CanvasLayer/MarkerContainer")]
+main_panels = [NodePath("CanvasLayer/TopBar"), NodePath("CanvasLayer/Sidebar"), NodePath("CanvasLayer/MarkerContainer")]
 world_tilemap = NodePath("World")
 decals_tilemap = NodePath("Decals")
 pencil_tilemap = NodePath("Pencil")
-world_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/WorldLayerCheck")
-decals_layer_checkbox = NodePath("CanvasLayer/ToolsContainer/Tools/LayerSelection/DecalsLayerCheck")
+world_layer_checkbox = NodePath("CanvasLayer/Sidebar/Tools/LayerSelection/WorldLayerCheck")
+decals_layer_checkbox = NodePath("CanvasLayer/Sidebar/Tools/LayerSelection/DecalsLayerCheck")
 main_canvas = NodePath("CanvasLayer")
 tileset_picker_modal = NodePath("CanvasLayer/TileSetPickerModal")
+controls_button = NodePath("CanvasLayer/TopBar/MapSettings/Controls")
+controls_panel = NodePath("CanvasLayer/ControlsAndInfoModal")
 metadata/_edit_vertical_guides_ = [959.0]
 metadata/_edit_horizontal_guides_ = [541.0, 167.0]
 
 [node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers")]
 script = ExtResource("4_u8lkl")
-map_file_dialog = NodePath("../CanvasLayer/ToolsContainer/Tools/MapPathDialog")
+map_file_dialog = NodePath("../CanvasLayer/Sidebar/Tools/MapPathDialog")
 new_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/NewMapButton")
 save_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/SaveMapButton")
 load_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/LoadMapButton")
@@ -47,7 +51,7 @@ marker_preview_scene = ExtResource("4_8fwno")
 world_marker_scene = ExtResource("5_erscx")
 editor = NodePath("..")
 close_data_container_button = NodePath("../CanvasLayer/MarkerContainer/MarkerData/CloseButton")
-place_poi_button = NodePath("../CanvasLayer/ToolsContainer/Tools/PlacePOI")
+place_poi_button = NodePath("../CanvasLayer/Sidebar/Tools/PlacePOI")
 marker_data_container = NodePath("../CanvasLayer/MarkerContainer")
 marker_name_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerName")
 marker_description_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/MarkerDescription")
@@ -122,7 +126,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Export"
 
-[node name="ToolsContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="Controls" type="Button" parent="CanvasLayer/TopBar/MapSettings"]
+layout_mode = 0
+anchor_left = 0.86820084
+anchor_top = 0.34210527
+anchor_right = 0.9686192
+anchor_bottom = 0.7105263
+text = "Controls & Info"
+metadata/_edit_use_anchors_ = true
+
+[node name="Sidebar" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_top = 0.15432099
 anchor_right = 0.1736111
@@ -133,17 +146,17 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 metadata/_edit_use_anchors_ = true
 
-[node name="Tools" type="Control" parent="CanvasLayer/ToolsContainer"]
+[node name="Tools" type="Control" parent="CanvasLayer/Sidebar"]
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="MapPathDialog" type="FileDialog" parent="CanvasLayer/ToolsContainer/Tools"]
+[node name="MapPathDialog" type="FileDialog" parent="CanvasLayer/Sidebar/Tools"]
 oversampling_override = 1.0
 position = Vector2i(280, 190)
 access = 2
 use_native_dialog = true
 
-[node name="ToolsBackground" type="ColorRect" parent="CanvasLayer/ToolsContainer/Tools"]
+[node name="ToolsBackground" type="ColorRect" parent="CanvasLayer/Sidebar/Tools"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -154,7 +167,7 @@ color = Color(0.055899993, 0.06701501, 0.13, 1)
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="SectionTitle" type="Label" parent="CanvasLayer/ToolsContainer/Tools"]
+[node name="SectionTitle" type="Label" parent="CanvasLayer/Sidebar/Tools"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -163,7 +176,7 @@ grow_horizontal = 2
 text = "Tiles"
 horizontal_alignment = 1
 
-[node name="TilesetPickerButton" type="Button" parent="CanvasLayer/ToolsContainer/Tools"]
+[node name="TilesetPickerButton" type="Button" parent="CanvasLayer/Sidebar/Tools"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.09375
@@ -175,7 +188,7 @@ grow_vertical = 0
 text = "Pick a tileset"
 metadata/_edit_use_anchors_ = true
 
-[node name="TileSelection" type="Control" parent="CanvasLayer/ToolsContainer/Tools"]
+[node name="TileSelection" type="Control" parent="CanvasLayer/Sidebar/Tools"]
 layout_mode = 1
 anchor_left = 0.09375
 anchor_top = 0.29320988
@@ -184,7 +197,7 @@ anchor_bottom = 0.7037037
 metadata/_edit_use_anchors_ = true
 metadata/_edit_group_ = true
 
-[node name="Background" type="ColorRect" parent="CanvasLayer/ToolsContainer/Tools/TileSelection"]
+[node name="Background" type="ColorRect" parent="CanvasLayer/Sidebar/Tools/TileSelection"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -194,7 +207,7 @@ grow_vertical = 2
 color = Color(0.09420922, 0.110147454, 0.19501653, 1)
 metadata/_edit_lock_ = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ToolsContainer/Tools/TileSelection"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Sidebar/Tools/TileSelection"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -202,13 +215,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TilesContainer" type="GridContainer" parent="CanvasLayer/ToolsContainer/Tools/TileSelection/ScrollContainer"]
+[node name="TilesContainer" type="GridContainer" parent="CanvasLayer/Sidebar/Tools/TileSelection/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 4
 
-[node name="LayerSelection" type="VBoxContainer" parent="CanvasLayer/ToolsContainer/Tools"]
+[node name="LayerSelection" type="VBoxContainer" parent="CanvasLayer/Sidebar/Tools"]
 layout_mode = 0
 anchor_left = 0.2457627
 anchor_top = 0.72530866
@@ -216,23 +229,45 @@ anchor_right = 0.56820077
 anchor_bottom = 0.7984312
 metadata/_edit_use_anchors_ = true
 
-[node name="WorldLayerCheck" type="CheckBox" parent="CanvasLayer/ToolsContainer/Tools/LayerSelection"]
+[node name="WorldLayerCheck" type="CheckBox" parent="CanvasLayer/Sidebar/Tools/LayerSelection"]
 layout_mode = 2
 button_pressed = true
 text = "World"
 
-[node name="DecalsLayerCheck" type="CheckBox" parent="CanvasLayer/ToolsContainer/Tools/LayerSelection"]
+[node name="DecalsLayerCheck" type="CheckBox" parent="CanvasLayer/Sidebar/Tools/LayerSelection"]
 layout_mode = 2
 text = "Decals"
 
-[node name="PlacePOI" type="Button" parent="CanvasLayer/ToolsContainer/Tools"]
-layout_mode = 0
+[node name="PlacePOI" type="Button" parent="CanvasLayer/Sidebar/Tools"]
+layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.092307694
-anchor_top = 0.8313076
+anchor_top = 0.9230203
 anchor_right = 0.9076923
-anchor_bottom = 0.88766116
+anchor_bottom = 0.9793739
 text = "Place Marker"
 metadata/_edit_use_anchors_ = true
+
+[node name="UserLayers" type="VBoxContainer" parent="CanvasLayer/Sidebar/Tools"]
+visible = false
+layout_mode = 0
+offset_left = 60.0
+offset_top = 725.3334
+offset_right = 252.0
+offset_bottom = 829.3334
+metadata/_edit_group_ = true
+
+[node name="Title" type="Label" parent="CanvasLayer/Sidebar/Tools/UserLayers"]
+layout_mode = 2
+text = "Layers"
+
+[node name="LayersContainer" type="ScrollContainer" parent="CanvasLayer/Sidebar/Tools/UserLayers"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LayerCheckboxContainer" parent="CanvasLayer/Sidebar/Tools/UserLayers/LayersContainer" instance=ExtResource("7_2k2fi")]
+layout_mode = 2
+layer_name = "New Layer"
 
 [node name="MarkerContainer" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -323,6 +358,12 @@ grow_vertical = 0
 text = "Close"
 
 [node name="TileSetPickerModal" parent="CanvasLayer" instance=ExtResource("7_11v6s")]
+
+[node name="ControlsAndInfoModal" parent="CanvasLayer" instance=ExtResource("9_q5rbk")]
+anchor_left = 0.2125
+anchor_top = 0.2962963
+anchor_right = 0.4125
+anchor_bottom = 0.8296296
 
 [node name="MainBackground" type="ColorRect" parent="."]
 anchors_preset = 15

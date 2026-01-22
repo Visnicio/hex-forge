@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://1ucpsbaewmj0"]
+
+[ext_resource type="Script" uid="uid://kvxv75cn8l3n" path="res://scenes/ui/layer_checkbox_container/layer_checkbox_container.gd" id="1_wcams"]
+
+[node name="LayerCheckboxContainer" type="HBoxContainer" node_paths=PackedStringArray("checkbox", "delete")]
+size_flags_horizontal = 3
+script = ExtResource("1_wcams")
+checkbox = NodePath("CheckBox")
+delete = NodePath("DeleteLayer")
+
+[node name="CheckBox" type="CheckBox" parent="."]
+layout_mode = 2
+text = "Hello World"
+
+[node name="DeleteLayer" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 10
+text = " X "

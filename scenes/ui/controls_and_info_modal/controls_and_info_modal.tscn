@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://doqcp1ne1qjwu"]
+
+[ext_resource type="Script" uid="uid://b02jl8yc7ihf0" path="res://scenes/ui/controls_and_info_modal/controls_and_info_modal.gd" id="1_o676y"]
+
+[node name="ControlsAndInfoModal" type="Panel"]
+anchors_preset = -1
+anchor_right = 0.2
+anchor_bottom = 0.51111114
+script = ExtResource("1_o676y")
+metadata/_edit_use_anchors_ = true
+
+[node name="Close" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.9296875
+anchor_right = 1.0
+anchor_bottom = 0.061507937
+grow_horizontal = 0
+text = " X "
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 320.0
+offset_bottom = 448.0
+metadata/_edit_group_ = true
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Controls"
+horizontal_alignment = 1
+
+[node name="Controls" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "WASD - Move Camera
+Left Mouse - Paint world
+Right Mouse - Erase world"
+horizontal_alignment = 1
+
+[node name="Title2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "
+
+Info"
+horizontal_alignment = 1
+
+[node name="Quirks" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "This is an Alpha version, controls are prone to change and the map json can be become outdated between versions. I try to keep it the most retrocompatible I can but sometimes changes are too much for the json format"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Version" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "
+
+Version:"
+horizontal_alignment = 1
+autowrap_mode = 3

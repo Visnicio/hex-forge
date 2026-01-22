@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="an_actual_useful_hex_mapper"
-config/version="Alpha"
+config/version="Alpha 0.2"
 run/main_scene="uid://cv45u5rc2lx6p"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="uid://bh8kr8lphc3iv"
