@@ -14,11 +14,11 @@ script = ExtResource("1_ov8ee")
 tileset_picker_button = NodePath("CanvasLayer/ToolsContainer/Tools/TilesetPickerButton")
 tiles_grid_container = NodePath("CanvasLayer/ToolsContainer/Tools/TileSelection/ScrollContainer/TilesContainer")
 tools_container = NodePath("CanvasLayer/ToolsContainer/Tools")
-map_name_input = NodePath("CanvasLayer/MapSettingsContainer/MapSettings/MapName")
+map_name_input = NodePath("CanvasLayer/TopBar/MapSettings/MapName")
 camera_input = NodePath("CameraInput")
 main_background = NodePath("MainBackground")
 camera = NodePath("Camera2D")
-main_panels = [NodePath("CanvasLayer/MapSettingsContainer"), NodePath("CanvasLayer/ToolsContainer"), NodePath("CanvasLayer/MarkerContainer")]
+main_panels = [NodePath("CanvasLayer/TopBar"), NodePath("CanvasLayer/ToolsContainer"), NodePath("CanvasLayer/MarkerContainer")]
 world_tilemap = NodePath("World")
 decals_tilemap = NodePath("Decals")
 pencil_tilemap = NodePath("Pencil")
@@ -32,11 +32,11 @@ metadata/_edit_horizontal_guides_ = [541.0, 167.0]
 [node name="MapDataManager" type="Node" parent="." node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers")]
 script = ExtResource("4_u8lkl")
 map_file_dialog = NodePath("../CanvasLayer/ToolsContainer/Tools/MapPathDialog")
-new_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/NewMapButton")
-save_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/SaveMapButton")
-load_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/LoadMapButton")
-export_map_button = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons/ExportButton")
-map_name_input = NodePath("../CanvasLayer/MapSettingsContainer/MapSettings/MapName")
+new_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/NewMapButton")
+save_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/SaveMapButton")
+load_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/LoadMapButton")
+export_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/ExportButton")
+map_name_input = NodePath("../CanvasLayer/TopBar/MapSettings/MapName")
 main_canvas = NodePath("../CanvasLayer")
 markers = NodePath("../Markers")
 world_marker_scene = ExtResource("5_erscx")
@@ -62,7 +62,7 @@ main_canvas = NodePath("../CanvasLayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="MapSettingsContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="TopBar" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.14814815
@@ -73,11 +73,11 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 metadata/_edit_use_anchors_ = true
 
-[node name="MapSettings" type="ColorRect" parent="CanvasLayer/MapSettingsContainer"]
+[node name="MapSettings" type="ColorRect" parent="CanvasLayer/TopBar"]
 layout_mode = 2
 color = Color(0.05490196, 0.06666667, 0.12941177, 1)
 
-[node name="MapName" type="LineEdit" parent="CanvasLayer/MapSettingsContainer/MapSettings"]
+[node name="MapName" type="LineEdit" parent="CanvasLayer/TopBar/MapSettings"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3951049
@@ -90,7 +90,7 @@ text = "MapName"
 placeholder_text = "MapName"
 metadata/_edit_use_anchors_ = true
 
-[node name="SaveLoadButtons" type="HBoxContainer" parent="CanvasLayer/MapSettingsContainer/MapSettings"]
+[node name="SaveLoadButtons" type="HBoxContainer" parent="CanvasLayer/TopBar/MapSettings"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.015734266
@@ -101,22 +101,23 @@ grow_vertical = 2
 metadata/_edit_group_ = true
 metadata/_edit_use_anchors_ = true
 
-[node name="NewMapButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
+[node name="NewMapButton" type="Button" parent="CanvasLayer/TopBar/MapSettings/SaveLoadButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "New Map"
 
-[node name="SaveMapButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
+[node name="SaveMapButton" type="Button" parent="CanvasLayer/TopBar/MapSettings/SaveLoadButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Save"
 
-[node name="LoadMapButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
+[node name="LoadMapButton" type="Button" parent="CanvasLayer/TopBar/MapSettings/SaveLoadButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Load"
 
-[node name="ExportButton" type="Button" parent="CanvasLayer/MapSettingsContainer/MapSettings/SaveLoadButtons"]
+[node name="ExportButton" type="Button" parent="CanvasLayer/TopBar/MapSettings/SaveLoadButtons"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Export"
