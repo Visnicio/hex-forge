@@ -49,6 +49,7 @@ func load_first_party_tilesets() -> void:
 			var file_access = FileAccess.open(full_path, FileAccess.READ)
 			if file_access == null:
 				printerr("Error while trying to open file ", full_path)
+				print_stack()
 				return
 			var json_text = file_access.get_as_text()
 			file_access.close()

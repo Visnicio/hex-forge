@@ -82,6 +82,7 @@ func load_map_into_editor(map_path: String) -> void:
 	var map_config_data = {}
 	if map_data.has("tileset_config_file"):
 		map_config_data = Utils.get_json_data(map_data.get("tileset_config_file")) 
+	editor.current_tileset_config_file = map_data.get("tileset_config_file")
 	editor.load_tileset_for_map(map_data.get("tileset_resource_path"), map_config_data)
 	
 	_load_sorted_layers(map_data)
