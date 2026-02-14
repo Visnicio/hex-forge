@@ -7,25 +7,18 @@ enum MapLayer {
 }
 
 @export var tileset_picker_button: Button
+## Holder of tiles available as pencil
 @export var tiles_grid_container: GridContainer
-@export var tools_container: Control
 @export var map_name_input: LineEdit
-@export var camera_input: CameraInput
 
 @export var main_background: ColorRect
 @export var camera: Camera2D
 
-## Used to check if mouse is in UI
+## Used to check if mouse is in UI, all panels on the ui
 @export var main_panels: Array[MarginContainer] 
 
 @export_group("Tilemaps")
-@export var world_tilemap: TileMapLayer
-@export var decals_tilemap: TileMapLayer
 @export var pencil_tilemap: TileMapLayer
-
-@export_group("Layers")
-@export var world_layer_checkbox: CheckBox
-@export var decals_layer_checkbox: CheckBox
 
 @export_group("UI")
 @export var main_canvas: CanvasLayer
@@ -38,10 +31,12 @@ enum MapLayer {
 var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
 ## current tile source id in case the tileset has more than one souce
 var current_selected_tile_source_id: int = -1
-## Current TileMapLayer selected
+## Current TileMapLayer selected for painting
 var current_selected_layer: TileMapLayer
 ## current tileset config file, ex: "res://resources/definitions/tilesets/example_tileset.json"
 var current_tileset_config_file: String = ""
+## Will be set whenever the user changes a tileset
+var current_tileset: TileSet
 
 ## Used for registering last actions by user so we can undo
 var undo_redo = UndoRedo.new()
@@ -50,29 +45,17 @@ var undo_redo = UndoRedo.new()
 var _current_stroke_buffer: Dictionary = {}
 var _is_painting: bool = false
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	tileset_picker_button.pressed.connect(_on_tileset_picker_button_pressed)
-	
-	world_layer_checkbox.pressed.connect(_on_world_layer_check_pressed)
-	decals_layer_checkbox.pressed.connect(_on_decal_layer_check_pressed)
-	
-	controls_button.pressed.connect(func():
-		controls_panel.show()
-		)
-	
-	tileset_picker_modal.config_changed.connect(func(new_tileset: String):
-		if tileset_picker_modal.tilesets.has(new_tileset):
-			var data = tileset_picker_modal.tilesets[new_tileset]
-			print(data)
-			current_tileset_config_file = data.file_path
-			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource, data)
-		)
-	
-	current_selected_layer = world_tilemap
+	GlobalEditorData.map_editor_ref = self # registers editor on globals
+	GlobalEditorData.layers_tilemaps_holder = get_node_or_null("LayersTilemaps") # TODO - investigate a better way to share this reference globally
 	
 	# clear defaults
 	clear_maps()
+	_connect_signals()
+	GlobalEditorData.user_layers.add_base_layers()
+	
+	current_selected_layer = null
+	
 
 func _process(_delta: float) -> void:
 	main_background.global_position = camera.get_screen_center_position() - main_background.get_rect().size / 2 # hacky to keep the background on screen but behind canvas layer
@@ -150,19 +133,16 @@ func load_tileset_for_map(tileset_resource_path: String, tileset_config_data: Di
 	
 	# load the tileset
 	var loaded_tileset: TileSet = load(tileset_resource_path)
-	pencil_tilemap.tile_set = loaded_tileset
-	world_tilemap.tile_set = loaded_tileset
-	decals_tilemap.tile_set = loaded_tileset
+	current_tileset = loaded_tileset
 	
-	if tileset_config_data != null: # retro compatible with older saves
-		if tileset_config_data.has("tilemap_scale"):
-			pencil_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
-			world_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
-			decals_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
-		else:
-			pencil_tilemap.scale = Vector2.ONE
-			world_tilemap.scale = Vector2.ONE
-			decals_tilemap.scale = Vector2.ONE
+	pencil_tilemap.tile_set = loaded_tileset
+	# loads tilesets for all layers
+	#for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
+		#print(layer)
+		#print(layer.layer_tilemap_ref)
+		#layer.layer_tilemap_ref.tile_set = loaded_tileset
+	
+	_update_tilesets_scales(tileset_config_data)
 	
 	#get its source
 	for i: int in loaded_tileset.get_source_count():
@@ -191,21 +171,10 @@ func load_tileset_for_map(tileset_resource_path: String, tileset_config_data: Di
 
 
 func clear_maps() -> void:
-	world_tilemap.clear()
-	world_tilemap.tile_set = null
+	GlobalEditorData.user_layers.delete_all_layers()
 	pencil_tilemap.clear()
 	pencil_tilemap.tile_set = null
-	decals_tilemap.clear()
-	decals_tilemap.tile_set = null
 
-
-func _on_world_layer_check_pressed() -> void:
-	decals_layer_checkbox.button_pressed = false
-	current_selected_layer = world_tilemap
-
-func _on_decal_layer_check_pressed() -> void:
-	world_layer_checkbox.button_pressed = false
-	current_selected_layer = decals_tilemap
 
 func is_mouse_on_tools() -> bool:
 	
@@ -230,7 +199,12 @@ func _start_stroke():
 
 # Paints visually and saves the old state to the buffer
 func _paint_at_mouse():
-	var mouse_pos = current_selected_layer.local_to_map(world_tilemap.to_local(get_global_mouse_position()))
+	if current_selected_layer == null:
+		push_warning("NO LAYER SELECTED")
+		return
+	
+	print(current_selected_layer.to_local(get_global_mouse_position()))
+	var mouse_pos = current_selected_layer.local_to_map(current_selected_layer.to_local(get_global_mouse_position()))
 	
 	var current_source = current_selected_layer.get_cell_source_id(mouse_pos)
 	var current_atlas = current_selected_layer.get_cell_atlas_coords(mouse_pos)
@@ -247,7 +221,7 @@ func _paint_at_mouse():
 	current_selected_layer.set_cell(mouse_pos, current_selected_tile_source_id, current_selected_tile_coords)
 
 func _erase_at_mouse():
-	var mouse_pos = current_selected_layer.local_to_map(world_tilemap.to_local(get_global_mouse_position()))
+	var mouse_pos = current_selected_layer.local_to_map(current_selected_layer.to_local(get_global_mouse_position()))
 	
 	var current_source = current_selected_layer.get_cell_source_id(mouse_pos)
 	if current_source == -1: return # Already empty
@@ -279,3 +253,35 @@ func _commit_stroke(action_name: String, is_erasing: bool):
 		undo_redo.add_undo_method(current_selected_layer.set_cell.bind(cell_pos, old_data["source"], old_data["atlas"]))
 		
 	undo_redo.commit_action(false)
+
+func _connect_signals() -> void:
+	tileset_picker_button.pressed.connect(_on_tileset_picker_button_pressed)
+	
+	controls_button.pressed.connect(func():
+		controls_panel.show()
+		)
+	
+	tileset_picker_modal.config_changed.connect(func(new_tileset: String):
+		if tileset_picker_modal.tilesets.has(new_tileset):
+			var data = tileset_picker_modal.tilesets[new_tileset]
+			print(data)
+			current_tileset_config_file = data.file_path
+			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource, data)
+		)
+	
+	SignalBus.layer_selected.connect(func(new_layer_selected: UserLayer):
+		print("New layer was selected: ", new_layer_selected)
+		current_selected_layer = new_layer_selected.layer_tilemap_ref
+		)
+
+
+func _update_tilesets_scales(tileset_config_data: Dictionary) -> void:
+	if tileset_config_data != null: # retro compatible with older saves
+		if tileset_config_data.has("tilemap_scale"):
+			pencil_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
+			for layer: UserLayer in GlobalEditorData.user_layers.all_user_layers.keys():
+				layer.layer_tilemap_ref.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
+		else:
+			pencil_tilemap.scale = Vector2.ONE
+			for layer: UserLayer in GlobalEditorData.user_layers.all_user_layers.keys():
+				layer.layer_tilemap_ref.scale = Vector2.ONE

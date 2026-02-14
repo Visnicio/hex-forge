@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dlgy81il8kt5t"]
+
+[ext_resource type="Script" uid="uid://cqepkrmhcipvr" path="res://scenes/ui/user_layers/user_layers.gd" id="1_srkgc"]
+
+[node name="UserLayers" type="VBoxContainer" unique_id=550124192 node_paths=PackedStringArray("layers_container")]
+offset_right = 272.0
+offset_bottom = 104.0
+script = ExtResource("1_srkgc")
+layers_container = NodePath("LayersContainer/VBoxContainer")
+metadata/_edit_group_ = true
+
+[node name="Title" type="Label" parent="." unique_id=334211236]
+layout_mode = 2
+text = "Layers"
+
+[node name="LayersContainer" type="ScrollContainer" parent="." unique_id=108881262]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LayersContainer" unique_id=1634666571]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AddLayerButton" type="Button" parent="." unique_id=1774343976]
+layout_mode = 2
+text = "+ Add Layer"
+
+[connection signal="pressed" from="AddLayerButton" to="." method="_on_add_layer_button_pressed"]

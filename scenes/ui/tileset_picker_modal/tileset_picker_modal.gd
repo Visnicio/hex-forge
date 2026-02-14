@@ -39,7 +39,7 @@ func load_first_party_tilesets() -> void:
 	dir.list_dir_begin()
 	var file_name = dir.get_next()
 	while file_name != "": # while theres a file
-		if !file_name.begins_with(".") and !file_name.ends_with(".import"): # if not a random import
+		if !file_name.begins_with(".") and !file_name.ends_with(".import") and !file_name.ends_with(".md"): # if not a random import
 			var full_path = tilesets_dir + "/" + file_name
 			
 			# Remove .remap extension if present
@@ -65,7 +65,7 @@ func load_first_party_tilesets() -> void:
 					"file_path": full_path
 				}
 			else:
-				push_error("Error parsing save file JSON")
+				push_error("Error parsing save file JSON: ", file_name)
 				#return {}
 
 		file_name = dir.get_next()

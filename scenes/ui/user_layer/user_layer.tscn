@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://1ucpsbaewmj0"]
+
+[ext_resource type="Script" uid="uid://kvxv75cn8l3n" path="res://scenes/ui/user_layer/user_layer.gd" id="1_oukth"]
+[ext_resource type="ButtonGroup" uid="uid://beegefiirte1m" path="res://resources/ui/LayersButtonGroup.tres" id="2_hgah8"]
+
+[node name="UserLayer" type="HBoxContainer" unique_id=1615856363 node_paths=PackedStringArray("checkbox")]
+size_flags_horizontal = 3
+script = ExtResource("1_oukth")
+checkbox = NodePath("CheckBox")
+layers_button_group = ExtResource("2_hgah8")
+
+[node name="CheckBox" type="CheckBox" parent="." unique_id=1407759075]
+layout_mode = 2
+button_group = ExtResource("2_hgah8")
+text = "Hello World"
+
+[node name="LayerButtons" type="HBoxContainer" parent="." unique_id=1385962018]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="MoveUp" type="Button" parent="LayerButtons" unique_id=2061633578]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "⬆️"
+
+[node name="DeleteLayer" type="Button" parent="LayerButtons" unique_id=1179975269]
+layout_mode = 2
+size_flags_horizontal = 10
+text = " X "
+
+[node name="MoveDown" type="Button" parent="LayerButtons" unique_id=1097893969]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "⬇️"

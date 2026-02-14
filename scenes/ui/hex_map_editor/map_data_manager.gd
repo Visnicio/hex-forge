@@ -1,4 +1,6 @@
-extends Node
+## Script used to handle saving and loading data from a save file into the editor tiles and other things like markers
+## this is here to our SaveManager can exist without the burden of a map editor (a.k.a headless save manager)
+class_name MapDataManager extends Node
 
 enum State {
 	SAVING,
@@ -23,7 +25,6 @@ var last_map_loaded_path: String = ""
 
 func _ready() -> void:
 	editor = get_parent() as HexMapEditor
-	
 	map_file_dialog.add_filter("*.json", "Map Files")
 	
 	export_map_button.pressed.connect(func():
@@ -56,12 +57,14 @@ func _input(event: InputEvent) -> void:
 			map_file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 			map_file_dialog.show()
 
-
+## Starts a new map
 func _on_new_map_pressed() -> void:
 	editor.clear_maps()
 	for child in editor.tiles_grid_container.get_children():
 		child.queue_free()
 	markers.clear_all_markers()
+	GlobalEditorData.user_layers.delete_all_layers()
+	GlobalEditorData.user_layers.add_base_layers()
 
 
 func on_file_selected(map_path: String) -> void:
