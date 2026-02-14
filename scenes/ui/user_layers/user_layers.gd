@@ -49,8 +49,9 @@ func delete_all_layers() -> void:
 
 ## ads all base layers for a map (World and Decals)
 func add_base_layers() -> void:
-	add_new_layer("World")
 	add_new_layer("Decals")
+	add_new_layer("World")
+	_refresh_layer_visuals()
 
 ## Utility function so you dont have to type a for loop every time
 func get_all_layers() -> Array[UserLayer]:
@@ -92,19 +93,22 @@ func _on_layer_reorder_requested(layer: UserLayer, direction: int) -> void:
 	if target_index < 0 or target_index >= all_user_layers.size():
 		return
 
-	var temp = all_user_layers[target_index]
-	all_user_layers[target_index] = all_user_layers[current_index]
-	all_user_layers[current_index] = temp
-	#swap_layers(target_index, current_index)
+	swap_layers(target_index, current_index)
 
 	_refresh_layer_visuals()
 	print("moved layers")
 
 func _refresh_layer_visuals() -> void:
-	for i in range(all_user_layers.size()):
+	var total_layers = all_user_layers.size()
+	
+	for i in range(total_layers):
+		if not all_user_layers.has(i): continue 
+		
 		var u_layer = all_user_layers[i]
 		
-		if is_instance_valid(u_layer.layer_tilemap_ref):
-			u_layer.layer_tilemap_ref.z_index = i
-			
 		u_layer.get_parent().move_child(u_layer, i)
+		
+		if is_instance_valid(u_layer.layer_tilemap_ref):
+			u_layer.layer_tilemap_ref.z_index = total_layers - i
+			
+			tilemaps_holder.move_child(u_layer.layer_tilemap_ref, total_layers - 1 - i)
