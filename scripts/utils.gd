@@ -4,6 +4,7 @@ static func get_json_data(json_path: String) -> Dictionary:
 	var file_access = FileAccess.open(json_path, FileAccess.READ)
 	if file_access == null:
 		printerr("Error while trying to open file ", json_path)
+		print_stack()
 		return {"error": "error"}
 	var json_text = file_access.get_as_text()
 	file_access.close()

@@ -20,7 +20,7 @@ func _ready() -> void:
 	SignalBus.layer_reorder_requested.connect(_on_layer_reorder_requested)
 
 ## adds a new layer and creates a new tilemap for it
-func add_new_layer(layer_name: String) -> void:
+func add_new_layer(layer_name: String) -> UserLayer:
 	var new_layer = USER_LAYER_SCENE.instantiate() as UserLayer
 	new_layer.layer_name = layer_name
 	
@@ -37,6 +37,7 @@ func add_new_layer(layer_name: String) -> void:
 	new_layer.layer_tilemap_ref = layer_tilemap # the refcounted will keep track of this boy for us, wont lose reference out of scope
 	layers_container.add_child(new_layer)
 	all_user_layers[all_user_layers.size()] = new_layer
+	return new_layer
 
 func delete_all_layers() -> void:
 	for layer: UserLayer in all_user_layers.values():

@@ -27,10 +27,6 @@ func _ready() -> void:
 	editor = get_parent() as HexMapEditor
 	map_file_dialog.add_filter("*.json", "Map Files")
 	
-	export_map_button.pressed.connect(func():
-		export_tilemap_to_png(editor.world_tilemap, "res://test.png")
-		)
-	
 	new_map_button.pressed.connect(_on_new_map_pressed)
 	
 	load_map_button.pressed.connect(func():
@@ -88,24 +84,9 @@ func load_map_into_editor(map_path: String) -> void:
 		map_config_data = Utils.get_json_data(map_data.get("tileset_config_file")) 
 	editor.load_tileset_for_map(map_data.get("tileset_resource_path"), map_config_data)
 	
-	# load world map
-	for cell_data_key: String in map_data.world_map.cells.keys():
-		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
-		var cell_data: Dictionary = map_data.world_map.cells[cell_data_key]
-		var source_id: int = 0
-		if cell_data.has("source_id"): # Retro Compatible with older saves
-			source_id = cell_data.get("source_id")
-		editor.world_tilemap.set_cell(key_as_vector, source_id, str_to_var("Vector2i"+cell_data.atlas_coords))
+	_load_sorted_layers(map_data)
 	
-	# load decals map
-	if !map_data.has("decals_map"): return
-	for cell_data_key: String in map_data.decals_map.cells.keys():
-		var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
-		var cell_data: Dictionary = map_data.decals_map.cells[cell_data_key]
-		var source_id: int = 0
-		if cell_data.has("source_id"): # Retro Compatible with older saves
-			source_id = cell_data.get("source_id")
-		editor.decals_tilemap.set_cell(key_as_vector, source_id, str_to_var("Vector2i"+cell_data.atlas_coords))
+	GlobalEditorData.user_layers._refresh_layer_visuals()
 	
 	# load markers
 	if map_data.has("markers"):
@@ -122,92 +103,28 @@ func load_map_into_editor(map_path: String) -> void:
 func save_current_map(map_path: String, tileset_config_file: String) -> void:
 	var map_data = {}
 	
-	map_data.world_map = {}
-	map_data.decals_map = {}
-	
-	map_data.world_map.cells = {}
-	map_data.decals_map.cells = {}
+	map_data.layers = {}
 	
 	# Create the .cells  key is cell_coord and value is dictionary
-	for cell_coord: Vector2i in editor.world_tilemap.get_used_cells(): # loop for the used cells to create the cell data to save
-		map_data.world_map.cells[cell_coord] = {
-			"atlas_coords": editor.world_tilemap.get_cell_atlas_coords(cell_coord),
-			"source_id": editor.world_tilemap.get_cell_source_id(cell_coord)
-		}
-	
-	for cell_coord: Vector2i in editor.decals_tilemap.get_used_cells(): # loop for the used cells to create the cell data to save
-		map_data.decals_map.cells[cell_coord] = {
-			"atlas_coords": editor.decals_tilemap.get_cell_atlas_coords(cell_coord),
-			"source_id": editor.decals_tilemap.get_cell_source_id(cell_coord)
-		}
+	for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
+		map_data.layers[layer.layer_name] = {}
+		map_data.layers[layer.layer_name].cells = {}
+		map_data.layers[layer.layer_name].index = GlobalEditorData.user_layers.get_user_layer_index(layer)
+		for cell_coord: Vector2i in layer.layer_tilemap_ref.get_used_cells(): # loop for the used cells to create the cell data to save
+			map_data.layers[layer.layer_name].cells[cell_coord] = {
+				"atlas_coords": layer.layer_tilemap_ref.get_cell_atlas_coords(cell_coord),
+				"source_id": layer.layer_tilemap_ref.get_cell_source_id(cell_coord)
+			}
+
 	
 	map_data.map_name = map_name_input.text
-	map_data.tileset_resource_path = editor.world_tilemap.tile_set.resource_path
+	map_data.tileset_resource_path = editor.pencil_tilemap.tile_set.resource_path
 	
 	map_data.markers = _get_markers_to_save()
 	
 	map_data.tileset_config_file = tileset_config_file
 	
 	SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
-
-
-func export_tilemap_to_png(world_tilemap: TileMapLayer, output_path: String):
-		# segurança
-	var used_rect: Rect2i = world_tilemap.get_used_rect()
-	if used_rect.size == Vector2i.ZERO:
-		push_error("TileMap vazio — nada para exportar.")
-		return
-
-	# --- calcula tamanho em pixels do bounding box usando cell_size (apenas para estimativa de tamanho) ---
-	var cell_size: Vector2 = world_tilemap.tile_set.tile_size
-	var px_width := int(ceil(float(used_rect.size.x) * float(cell_size.x)))
-	var px_height := int(ceil(float(used_rect.size.y) * float(cell_size.y)))
-
-	# --- calcula o offset correto em pixels usando map_to_world (resolve hex/isometria/offsets) ---
-	var pixel_origin: Vector2 = world_tilemap.map_to_local(used_rect.position)
-
-	# --- cria SubViewport e container e garante que o container tenha o mesmo tamanho ---
-	var sv := SubViewport.new()
-	sv.size = Vector2i(px_width, px_height)
-	sv.transparent_bg = true
-
-	var svc := SubViewportContainer.new()
-	# garante que o container reserve o espaço necessário (Control API)
-	svc.size = Vector2(px_width, px_height)
-	svc.custom_minimum_size = Vector2(px_width, px_height)
-	svc.add_child(sv)
-
-	# adiciona à cena para que o SubViewport renderize
-	add_child(svc)
-
-	# --- duplica o TileMap e posiciona usando o pixel_origin calculado ---
-	var temp_tm := world_tilemap.duplicate()
-	# força a referência ao tileset original (segurança)
-	temp_tm.tile_set = world_tilemap.tile_set
-	# posiciona a cópia de forma que a célula usada mais à esquerda/cima vá para 0,0 do viewport
-	temp_tm.position = -pixel_origin
-	sv.add_child(temp_tm)
-
-	# espera frame para o SubViewport ter conteúdo renderizado
-	await get_tree().process_frame
-
-	# captura a textura/imagem
-	var tex := sv.get_texture()
-	if tex == null:
-		push_error("SubViewport não retornou textura.")
-		svc.queue_free()
-		return
-
-	var img: Image = tex.get_image()
-	img.flip_y() # normalmente necessário
-	var err := img.save_png(output_path)
-	if err == OK:
-		print("Exportado para:", output_path)
-	else:
-		push_error("Erro ao salvar PNG: " + str(err))
-
-	# limpa
-	svc.queue_free()
 
 
 func _get_markers_to_save() -> Dictionary:
@@ -222,3 +139,38 @@ func _get_markers_to_save() -> Dictionary:
 			marker_data.marker_description = child.marker_description
 			result[child.name] = marker_data
 	return result
+
+
+func _load_sorted_layers(map_data: Dictionary) -> void:
+	var sorted_layers_data: Array = [] # Array[Dictionary]
+	
+	for layer_name: String in map_data.layers:
+		var layer_content = map_data.layers[layer_name]
+		layer_content["_temp_name_ref"] = layer_name 
+		sorted_layers_data.append(layer_content)
+
+	sorted_layers_data.sort_custom(func(a, b):
+		return a.get("index", 0) < b.get("index", 0)
+	)
+
+	for layer_data: Dictionary in sorted_layers_data:
+		var layer_name = layer_data["_temp_name_ref"]
+		
+		GlobalEditorData.user_layers.add_new_layer(layer_name)
+		
+		var new_layer_index = GlobalEditorData.user_layers.all_user_layers.size() - 1
+		var new_layer = GlobalEditorData.user_layers.all_user_layers[new_layer_index]
+		
+		if layer_data.has("cells"):
+			var cells = layer_data.cells
+			for cell_data_key: String in cells.keys():
+				var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
+				var cell_content: Dictionary = cells[cell_data_key]
+				
+				var source_id: int = 0
+				if cell_content.has("source_id"): 
+					source_id = cell_content.get("source_id")
+				
+				var atlas_coords = str_to_var("Vector2i"+str(cell_content.get("atlas_coords", "(0,0)")))
+				
+				new_layer.layer_tilemap_ref.set_cell(key_as_vector, source_id, atlas_coords)
