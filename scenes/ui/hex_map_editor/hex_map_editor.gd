@@ -64,6 +64,7 @@ func _process(_delta: float) -> void:
 	if current_selected_tile_coords != Vector2i(-1, -1) and current_selected_tile_source_id != -1:
 		var mouse_pos = pencil_tilemap.to_local(get_global_mouse_position())
 		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
+		#pencil_tilemap.z_index = current_selected_layer.z_index
 
 func _input(event: InputEvent) -> void:
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
@@ -136,11 +137,6 @@ func load_tileset_for_map(tileset_resource_path: String, tileset_config_data: Di
 	current_tileset = loaded_tileset
 	
 	pencil_tilemap.tile_set = loaded_tileset
-	# loads tilesets for all layers
-	#for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
-		#print(layer)
-		#print(layer.layer_tilemap_ref)
-		#layer.layer_tilemap_ref.tile_set = loaded_tileset
 	
 	_update_tilesets_scales(tileset_config_data)
 	
