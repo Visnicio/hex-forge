@@ -3,11 +3,14 @@
 [ext_resource type="Script" uid="uid://kvxv75cn8l3n" path="res://scenes/ui/user_layer/user_layer.gd" id="1_oukth"]
 [ext_resource type="ButtonGroup" uid="uid://beegefiirte1m" path="res://resources/ui/LayersButtonGroup.tres" id="2_hgah8"]
 
-[node name="UserLayer" type="HBoxContainer" unique_id=1615856363 node_paths=PackedStringArray("checkbox")]
+[node name="UserLayer" type="HBoxContainer" unique_id=1615856363 node_paths=PackedStringArray("checkbox", "delete_button", "move_up_button", "move_down_button")]
 size_flags_horizontal = 3
 script = ExtResource("1_oukth")
 checkbox = NodePath("CheckBox")
+delete_button = NodePath("LayerButtons/DeleteLayer")
 layers_button_group = ExtResource("2_hgah8")
+move_up_button = NodePath("LayerButtons/MoveUp")
+move_down_button = NodePath("LayerButtons/MoveDown")
 
 [node name="CheckBox" type="CheckBox" parent="." unique_id=1407759075]
 layout_mode = 2

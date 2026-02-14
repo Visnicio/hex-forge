@@ -279,9 +279,9 @@ func _update_tilesets_scales(tileset_config_data: Dictionary) -> void:
 	if tileset_config_data != null: # retro compatible with older saves
 		if tileset_config_data.has("tilemap_scale"):
 			pencil_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
-			for layer: UserLayer in GlobalEditorData.user_layers.all_user_layers.keys():
+			for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
 				layer.layer_tilemap_ref.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
 		else:
 			pencil_tilemap.scale = Vector2.ONE
-			for layer: UserLayer in GlobalEditorData.user_layers.all_user_layers.keys():
+			for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
 				layer.layer_tilemap_ref.scale = Vector2.ONE

@@ -7,6 +7,9 @@ class_name UserLayer extends HBoxContainer
 @export var delete_button: Button
 ## A reference to its button group, used to fire a global signal when a new layer is selected
 @export var layers_button_group: ButtonGroup
+@export var move_up_button: Button
+@export var move_down_button: Button
+
 
 
 func _ready() -> void:
@@ -14,4 +17,11 @@ func _ready() -> void:
 	layers_button_group.pressed.connect(func(new_button_pressed: BaseButton):
 		if new_button_pressed == checkbox:
 			SignalBus.layer_selected.emit(self)
+		)
+	
+	move_up_button.pressed.connect(func():
+		SignalBus.layer_reorder_requested.emit(self, -1)
+		)
+	move_down_button.pressed.connect(func():
+		SignalBus.layer_reorder_requested.emit(self, 1) # descend index
 		)
