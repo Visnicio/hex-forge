@@ -20,10 +20,11 @@ func _physics_process(delta: float) -> void:
 		camera_pan_direction.y = Input.get_axis("camera_pan_up", "camera_pan_down")
 	
 	if Input.is_action_pressed("camera_rush"):
-		camera_speed = 200
+		camera_speed = 400
 	else:
-		camera_speed = 100
-	
+		camera_speed = 200
+		
+	#var current_speed = camera_speed * (1.0 / target_camera.zoom.x)
 	target_camera.global_position += camera_pan_direction * camera_speed * delta
 	
 	ui_has_focus = get_viewport().gui_get_focus_owner() != null

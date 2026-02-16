@@ -174,10 +174,15 @@ func clear_maps() -> void:
 
 
 func is_mouse_on_tools() -> bool:
-	
 	for panel: MarginContainer in main_panels:
-		if panel.get_global_rect().has_point(get_viewport().get_mouse_position()):
+		if panel.get_global_rect().has_point(get_viewport().get_mouse_position()) and panel.visible:
 			return true
+	
+	# checks for mouse inside any control node, and not on map
+	for child in GlobalEditorData.main_canvas.get_children():
+		if child is Control:
+			if child.visible and child.get_global_rect().has_point(get_viewport().get_mouse_position()):
+				return true
 	
 	return false
 

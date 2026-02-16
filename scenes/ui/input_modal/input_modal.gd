@@ -13,6 +13,8 @@ func _ready() -> void:
 		queue_free()
 		)
 	
+	input.grab_focus()
+	
 	input.text_changed.connect(func(new_text: String):
 		current_value = new_text
 		value_changed.emit(current_value)
