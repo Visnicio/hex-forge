@@ -4,6 +4,7 @@ extends Node
 var map_editor_ref: HexMapEditor
 var layers_tilemaps_holder: Node2D
 var user_layers: UserLayers
+var main_canvas: CanvasLayer
 
 
 # generally we should avoid putting logic here to keep the app event driven and light on the CPU side

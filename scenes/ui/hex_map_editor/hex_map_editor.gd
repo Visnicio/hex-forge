@@ -48,6 +48,7 @@ var _is_painting: bool = false
 func _ready() -> void:
 	GlobalEditorData.map_editor_ref = self # registers editor on globals
 	GlobalEditorData.layers_tilemaps_holder = get_node_or_null("LayersTilemaps") # TODO - investigate a better way to share this reference globally
+	GlobalEditorData.main_canvas = $CanvasLayer
 	
 	# clear defaults
 	clear_maps()

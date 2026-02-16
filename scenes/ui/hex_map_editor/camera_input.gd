@@ -8,8 +8,9 @@ class_name CameraInput extends Node
 var ui_has_focus: bool = false
 
 func _ready() -> void:
-	for child in main_canvas.get_children():
-		connect_focus_signal_from_node(child)
+	#for child in main_canvas.get_children():
+		#connect_focus_signal_from_node(child)
+	pass
 
 func _physics_process(delta: float) -> void:
 	var camera_pan_direction: Vector2 = Vector2.ZERO
@@ -24,6 +25,8 @@ func _physics_process(delta: float) -> void:
 		camera_speed = 100
 	
 	target_camera.global_position += camera_pan_direction * camera_speed * delta
+	
+	ui_has_focus = get_viewport().gui_get_focus_owner() != null
 	
 func _input(event: InputEvent) -> void:
 	const WHEEL_UP = 4
