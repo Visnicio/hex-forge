@@ -125,6 +125,8 @@ func save_current_map(map_path: String, tileset_config_file: String) -> void:
 	
 	map_data.tileset_config_file = tileset_config_file
 	
+	map_data.manifest_version = ProjectSettings.get_setting("application/config/version") 
+	
 	SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
 
 

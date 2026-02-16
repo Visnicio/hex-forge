@@ -1,16 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwcsyy060sev0"]
+[gd_scene format=3 uid="uid://dwcsyy060sev0"]
 
 [ext_resource type="Texture2D" uid="uid://c3ucqxh6oo3r5" path="res://assets/gfx/ui/icons/marker-stroked-svgrepo-com.svg" id="1_tai56"]
 [ext_resource type="Script" uid="uid://dx5nwgk15l6gl" path="res://scenes/entities/world_marker/world_marker.gd" id="2_sdikh"]
 
-[node name="WorldMarker" type="Sprite2D" node_paths=PackedStringArray("start_dragging_timer")]
+[node name="WorldMarker" type="Sprite2D" unique_id=879906027 node_paths=PackedStringArray("start_dragging_timer")]
+z_index = 4096
 scale = Vector2(0.017499998, 0.0175)
 texture = ExtResource("1_tai56")
 script = ExtResource("2_sdikh")
 marker_color = Color(0.80319715, 0.59639925, 0.6419626, 1)
 start_dragging_timer = NodePath("StartDraggingBufferTimer")
 
-[node name="MarkerName" type="Label" parent="."]
+[node name="MarkerName" type="Label" parent="." unique_id=127817149]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -27,13 +28,13 @@ theme_override_constants/outline_size = 8
 text = "MAP_MARKER_NAME"
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="." unique_id=1446753097]
 self_modulate = Color(1, 1, 1, 0)
 offset_left = -392.00003
 offset_top = -392.0
 offset_right = 400.00003
 offset_bottom = 400.0
 
-[node name="StartDraggingBufferTimer" type="Timer" parent="."]
+[node name="StartDraggingBufferTimer" type="Timer" parent="." unique_id=2034471789]
 wait_time = 0.3
 one_shot = true
