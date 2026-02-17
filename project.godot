@@ -25,6 +25,7 @@ config/icon="uid://bqth4houkudfu"
 SaveManager="*res://autload/save_manager.gd"
 SignalBus="*res://autload/signal_bus.gd"
 GlobalEditorData="*uid://bgebuuw37x5eh"
+ModLoader="*uid://duhvqskanred5"
 
 [display]
 

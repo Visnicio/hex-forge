@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MapTilesetConfiguration" format=3 uid="uid://cc7ed7t4xhp4u"]
+
+[ext_resource type="Script" uid="uid://bmjw4vm8tkwlc" path="res://resources/definitions/tilesets/map_tileset_configuration.gd" id="1_tjexj"]
+[ext_resource type="TileSet" uid="uid://dekawidgy8nlu" path="res://resources/tilesets/example_tileset.tres" id="2_t1peh"]
+
+[resource]
+script = ExtResource("1_tjexj")
+tileset_name = "Pixel Fantasy Sample"
+tileset_resource = ExtResource("2_t1peh")
+metadata/_custom_type_script = "uid://bmjw4vm8tkwlc"

@@ -268,7 +268,7 @@ func _connect_signals() -> void:
 			var data = tileset_picker_modal.tilesets[new_tileset]
 			print(data)
 			current_tileset_config_file = data.file_path
-			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource, data)
+			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource.resource_path, data)
 		)
 	
 	SignalBus.layer_selected.connect(func(new_layer_selected: UserLayer):

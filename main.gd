@@ -14,7 +14,7 @@ func _ready() -> void:
 	else:
 		print("A pasta 'user://tilesets' já existe.")
 	
-	copy_base_files("res://resources/tilesets/example_tileset.tres", "user://tilesets/example_tileset.tres")
+	#copy_base_files("res://resources/tilesets/example_tileset.tres", "user://tilesets/example_tileset.tres")
 
 
 func copy_base_files(base_file: String, target_file: String) -> void:

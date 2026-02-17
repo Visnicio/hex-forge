@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://b36tetv3an26n"]
+[gd_scene format=3 uid="uid://b36tetv3an26n"]
 
 [ext_resource type="Script" uid="uid://c561ar0ebo81v" path="res://scenes/ui/tileset_picker_modal/tileset_picker_modal.gd" id="1_7qfwj"]
 
-[node name="TileSetPickerModal" type="Control" node_paths=PackedStringArray("tileset_picker")]
+[node name="TileSetPickerModal" type="Control" unique_id=1029360954 node_paths=PackedStringArray("tileset_picker")]
 layout_mode = 3
 anchor_left = 0.34166667
 anchor_top = 0.31851852
@@ -14,7 +14,7 @@ script = ExtResource("1_7qfwj")
 tileset_picker = NodePath("Select/TilesetPicker")
 metadata/_edit_use_anchors_ = true
 
-[node name="BG" type="Panel" parent="."]
+[node name="BG" type="Panel" parent="." unique_id=330378240]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="."]
+[node name="Title" type="Label" parent="." unique_id=2034773744]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.011513158
@@ -33,7 +33,7 @@ text = "Tilemap Config"
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Select" type="VBoxContainer" parent="."]
+[node name="Select" type="VBoxContainer" parent="." unique_id=1158156390]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3289474
@@ -47,14 +47,14 @@ grow_vertical = 2
 metadata/_edit_group_ = true
 metadata/_edit_use_anchors_ = true
 
-[node name="Title" type="Label" parent="Select"]
+[node name="Title" type="Label" parent="Select" unique_id=1844885306]
 layout_mode = 2
 text = "TileSet File"
 
-[node name="TilesetPicker" type="OptionButton" parent="Select"]
+[node name="TilesetPicker" type="OptionButton" parent="Select" unique_id=802623825]
 layout_mode = 2
 
-[node name="Close" type="Button" parent="."]
+[node name="Close" type="Button" parent="." unique_id=112292027]
 layout_mode = 0
 anchor_left = 0.94736844
 anchor_right = 1.0032895

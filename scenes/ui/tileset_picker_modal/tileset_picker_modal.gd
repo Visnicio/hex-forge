@@ -5,6 +5,8 @@ class_name TileSetPickerModal extends Control
 
 ## Use new_tileset to query on TileSetPickerModal.tilesets keys
 signal config_changed(new_tileset: String)
+
+## Holds every selectable tileset, key is tileset id (must be unique) and value is random data accessable when switching
 var tilesets: Dictionary[String, Dictionary] = {}
 
 @export var tileset_picker: OptionButton
@@ -13,6 +15,8 @@ func _ready() -> void:
 	hide()
 	load_first_party_tilesets()
 	tileset_picker.add_item("None")
+	
+	# populates selectable tilesets
 	for tileset_name in tilesets.keys():
 		tileset_picker.add_item(tileset_name)
 		
@@ -31,10 +35,10 @@ func _ready() -> void:
 
 
 func load_first_party_tilesets() -> void:
-	var tilesets_dir: String = "res://resources/definitions/tilesets"
+	var tilesets_dir: String = "res://samples"
 	var dir = DirAccess.open(tilesets_dir)
 	if not dir:
-		push_error("Could not find tilesets dir")
+		push_error("Could not find sample tilesets dir")
 
 	dir.list_dir_begin()
 	var file_name = dir.get_next()
@@ -46,28 +50,16 @@ func load_first_party_tilesets() -> void:
 			if full_path.ends_with(".remap"):
 				full_path = full_path.substr(0, full_path.length() - 6)
 			
-			var file_access = FileAccess.open(full_path, FileAccess.READ)
-			if file_access == null:
-				printerr("Error while trying to open file ", full_path)
-				print_stack()
-				return
-			var json_text = file_access.get_as_text()
-			file_access.close()
-			
-			var json = JSON.new()
-			var result = json.parse(json_text)
-			if result == OK:
-				var data = json.data
-				print("Loaded ", json.data.title)
-				tilesets[data.title] = {
-					"tileset_resource": data.tileset_resource,
-					"tilemap_scale": data.tilemap_scale,
+			var loaded_config: MapTilesetConfiguration = load(full_path)
+			if loaded_config != null:
+				tilesets[loaded_config.tileset_name] = {
+					"tileset_resource": loaded_config.tileset_resource,
+					"tilemap_scale": loaded_config.tilemap_scale,
 					"file_name": file_name,
 					"file_path": full_path
 				}
 			else:
 				push_error("Error parsing save file JSON: ", file_name)
-				#return {}
 
 		file_name = dir.get_next()
 	dir.list_dir_end()

@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://ija4tro71eyt"]
+[gd_resource type="TileSet" format=3 uid="uid://ija4tro71eyt"]
 
 [ext_resource type="Texture2D" uid="uid://gdat7xbph51b" path="res://assets/gfx/tiles/Hex and Tile Samples 1.0.1/packed.png" id="1_ux7cn"]
 
