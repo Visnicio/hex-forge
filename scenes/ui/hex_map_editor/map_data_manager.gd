@@ -138,7 +138,7 @@ func _get_markers_to_save() -> Dictionary:
 			result[child.name] = marker_data
 	return result
 
-
+## loads the layers from save data sorted by their index (when writing the save data we dont know which order the engine is gonna write to the file)
 func _load_sorted_layers(map_data: Dictionary) -> void:
 	var sorted_layers_data: Array = [] # Array[Dictionary]
 	
