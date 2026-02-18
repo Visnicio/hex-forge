@@ -33,8 +33,7 @@ var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
 var current_selected_tile_source_id: int = -1
 ## Current TileMapLayer selected for painting
 var current_selected_layer: TileMapLayer
-## current tileset config file, ex: "res://resources/definitions/tilesets/example_tileset.json"
-var current_tileset_config_file: String = ""
+var current_map_tileset_configuration: MapTilesetConfiguration = null
 ## Will be set whenever the user changes a tileset
 var current_tileset: TileSet
 
@@ -127,23 +126,29 @@ func _create_tile_button(button_texture: Texture2D, buttons_container: GridConta
 	
 	buttons_container.add_child(new_button)
 
-
-func load_tileset_for_map(tileset_resource_path: String, tileset_config_data: Dictionary) -> void:
+## Loads a tileset configuration for the current map, generates pencil buttons
+func load_tileset_for_map(map_tileset_configuraton: MapTilesetConfiguration) -> void:
 	deselect_current_pencil()
 	for child in tiles_grid_container.get_children():
 		child.queue_free()
 	
 	# load the tileset
-	var loaded_tileset: TileSet = load(tileset_resource_path)
+	var loaded_tileset: TileSet = map_tileset_configuraton.tileset_resource
+	assert(loaded_tileset != null, "loaded tileset is a valid resource")
+	
 	current_tileset = loaded_tileset
 	
 	pencil_tilemap.tile_set = loaded_tileset
 	
-	_update_tilesets_scales(tileset_config_data)
+	_update_tilesets_scales(map_tileset_configuraton)
 	
-	#get its source
+	#get its source to generate pencil buttons
 	for i: int in loaded_tileset.get_source_count():
-		var tileset_source: TileSetSource = loaded_tileset.get_source(i)
+		# it may occur a time that the tileset thas only one source (source_count = 1) but its id is other umber (id: 27 for example)
+		# so we need to get the id of the current source we are looping
+		var source_id = loaded_tileset.get_source_id(i)
+		if !loaded_tileset.has_source(source_id): continue
+		var tileset_source: TileSetSource = loaded_tileset.get_source(source_id)
 		if tileset_source == null: continue
 		
 		var rows: int = tileset_source.get_atlas_grid_size().y
@@ -164,7 +169,7 @@ func load_tileset_for_map(tileset_resource_path: String, tileset_config_data: Di
 					atlas.region = tileset_source.get_tile_texture_region(tile_coord)
 					
 					# creates the button
-					_create_tile_button(atlas, tiles_grid_container, tile_coord, i)
+					_create_tile_button(atlas, tiles_grid_container, tile_coord, source_id)
 
 
 func clear_maps() -> void:
@@ -205,7 +210,6 @@ func _paint_at_mouse():
 		push_warning("NO LAYER SELECTED")
 		return
 	
-	print(current_selected_layer.to_local(get_global_mouse_position()))
 	var mouse_pos = current_selected_layer.local_to_map(current_selected_layer.to_local(get_global_mouse_position()))
 	
 	var current_source = current_selected_layer.get_cell_source_id(mouse_pos)
@@ -263,12 +267,11 @@ func _connect_signals() -> void:
 		controls_panel.show()
 		)
 	
-	tileset_picker_modal.config_changed.connect(func(new_tileset: String):
-		if tileset_picker_modal.tilesets.has(new_tileset):
-			var data = tileset_picker_modal.tilesets[new_tileset]
-			print(data)
-			current_tileset_config_file = data.file_path
-			load_tileset_for_map(tileset_picker_modal.tilesets[new_tileset].tileset_resource.resource_path, data)
+	tileset_picker_modal.config_changed.connect(func(new_tileset_title: String):
+		if tileset_picker_modal.tilesets.has(new_tileset_title):
+			var config : MapTilesetConfiguration = tileset_picker_modal.tilesets[new_tileset_title] as MapTilesetConfiguration
+			current_map_tileset_configuration = config
+			load_tileset_for_map(config)
 		)
 	
 	SignalBus.layer_selected.connect(func(new_layer_selected: UserLayer):
@@ -277,13 +280,7 @@ func _connect_signals() -> void:
 		)
 
 
-func _update_tilesets_scales(tileset_config_data: Dictionary) -> void:
-	if tileset_config_data != null: # retro compatible with older saves
-		if tileset_config_data.has("tilemap_scale"):
-			pencil_tilemap.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
-			for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
-				layer.layer_tilemap_ref.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)
-		else:
-			pencil_tilemap.scale = Vector2.ONE
-			for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
-				layer.layer_tilemap_ref.scale = Vector2.ONE
+func _update_tilesets_scales(tileset_config_data: MapTilesetConfiguration) -> void:
+	pencil_tilemap.scale = Vector2(tileset_config_data.tilemap_scale, tileset_config_data.tilemap_scale)
+	for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
+		layer.layer_tilemap_ref.scale = Vector2(tileset_config_data.tilemap_scale,tileset_config_data.tilemap_scale)

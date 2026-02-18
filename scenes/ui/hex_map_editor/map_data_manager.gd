@@ -65,12 +65,12 @@ func _on_new_map_pressed() -> void:
 
 func on_file_selected(map_path: String) -> void:
 	if current_state == State.SAVING:
-		save_current_map(map_path, editor.current_tileset_config_file)
+		save_current_map(map_path, editor.current_map_tileset_configuration)
 		
 	elif current_state == State.LOADING:
 		load_map_into_editor(map_path);
 
-
+## Loads a mapa into the editor... hm
 func load_map_into_editor(map_path: String) -> void:
 	editor.clear_maps()
 	markers.clear_all_markers()
@@ -79,11 +79,12 @@ func load_map_into_editor(map_path: String) -> void:
 	
 	var map_data: Dictionary = SaveManager.load_map(map_path)
 	map_name_input.text = map_data.get("map_name", "No Name Saved")
-	var map_config_data = {}
-	if map_data.has("tileset_config_file"):
-		map_config_data = Utils.get_json_data(map_data.get("tileset_config_file")) 
-	editor.current_tileset_config_file = map_data.get("tileset_config_file")
-	editor.load_tileset_for_map(map_data.get("tileset_resource_path"), map_config_data)
+	var map_config_data: MapTilesetConfiguration = null
+	if map_data.has("map_tileset_configuration"):
+		# we save the resource path to we can load it
+		map_config_data = load(map_data.get("map_tileset_configuration"))
+	editor.current_map_tileset_configuration = map_config_data
+	editor.load_tileset_for_map(map_config_data)
 	
 	_load_sorted_layers(map_data)
 	
@@ -101,8 +102,12 @@ func load_map_into_editor(map_path: String) -> void:
 	
 	last_map_loaded_path = map_path
 
-func save_current_map(map_path: String, tileset_config_file: String) -> void:
+func save_current_map(map_path: String, map_tileset_configuration: MapTilesetConfiguration) -> void:
 	var map_data = {}
+	map_data.map_name = map_name_input.text
+	map_data.markers = _get_markers_to_save()
+	map_data.map_tileset_configuration = map_tileset_configuration.resource_path
+	map_data.manifest_version = ProjectSettings.get_setting("application/config/version") 
 	
 	map_data.layers = {}
 	
@@ -116,16 +121,6 @@ func save_current_map(map_path: String, tileset_config_file: String) -> void:
 				"atlas_coords": layer.layer_tilemap_ref.get_cell_atlas_coords(cell_coord),
 				"source_id": layer.layer_tilemap_ref.get_cell_source_id(cell_coord)
 			}
-
-	
-	map_data.map_name = map_name_input.text
-	map_data.tileset_resource_path = editor.pencil_tilemap.tile_set.resource_path
-	
-	map_data.markers = _get_markers_to_save()
-	
-	map_data.tileset_config_file = tileset_config_file
-	
-	map_data.manifest_version = ProjectSettings.get_setting("application/config/version") 
 	
 	SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
 

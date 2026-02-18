@@ -81,4 +81,3 @@ func _on_marker_color_changed(new_color: Color) -> void:
 
 func _on_marker_description_changed() -> void:
 	current_selected_marker.marker_description = marker_description_input.text
-	print(current_selected_marker.marker_description)

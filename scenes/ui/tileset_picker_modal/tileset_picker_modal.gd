@@ -4,16 +4,17 @@
 class_name TileSetPickerModal extends Control
 
 ## Use new_tileset to query on TileSetPickerModal.tilesets keys
-signal config_changed(new_tileset: String)
+signal config_changed(new_tileset_title: String)
 
-## Holds every selectable tileset, key is tileset id (must be unique) and value is random data accessable when switching
-var tilesets: Dictionary[String, Dictionary] = {}
+## Holds every selectable tileset, key is tileset id (must be unique) and value is config
+var tilesets: Dictionary[String, MapTilesetConfiguration] = {}
 
 @export var tileset_picker: OptionButton
 
 func _ready() -> void:
 	hide()
-	load_first_party_tilesets()
+	load_samples_tilesets()
+	get_mods_tilesets()
 	tileset_picker.add_item("None")
 	
 	# populates selectable tilesets
@@ -34,7 +35,7 @@ func _ready() -> void:
 		)
 
 
-func load_first_party_tilesets() -> void:
+func load_samples_tilesets() -> void:
 	var tilesets_dir: String = "res://samples"
 	var dir = DirAccess.open(tilesets_dir)
 	if not dir:
@@ -52,15 +53,13 @@ func load_first_party_tilesets() -> void:
 			
 			var loaded_config: MapTilesetConfiguration = load(full_path)
 			if loaded_config != null:
-				tilesets[loaded_config.tileset_name] = {
-					"tileset_resource": loaded_config.tileset_resource,
-					"tilemap_scale": loaded_config.tilemap_scale,
-					"file_name": file_name,
-					"file_path": full_path
-				}
+				tilesets[loaded_config.tileset_name] = loaded_config
 			else:
 				push_error("Error parsing save file JSON: ", file_name)
 
 		file_name = dir.get_next()
 	dir.list_dir_end()
-	
+
+func get_mods_tilesets() -> void:
+	tilesets.merge(ModLoader.mod_tilesets)
+	print_debug(tilesets)

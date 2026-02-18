@@ -6,10 +6,12 @@ var layers_tilemaps_holder: Node2D
 var user_layers: UserLayers
 var main_canvas: CanvasLayer
 
+var selected_map_config: MapTilesetConfiguration = null
+
 
 # generally we should avoid putting logic here to keep the app event driven and light on the CPU side
 # but sometimes things needs to be constantly checked, so go wild
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	_sync_tileset_data_between_layers()
 
 
