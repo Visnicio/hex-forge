@@ -9,8 +9,19 @@ func _ready() -> void:
 	
 func load_tilesets_mods() -> void:
 	var user_mods_dir: String = "user://tilesets"
-	var dir = DirAccess.open("user://tilesets")
-	
+
+	if not DirAccess.dir_exists_absolute(user_mods_dir):
+		var err = DirAccess.make_dir_recursive_absolute(user_mods_dir)
+		if err != OK:
+			push_error("ModLoader - Failed to create tilesets directory. Error code: ", err)
+			return
+
+	var dir = DirAccess.open(user_mods_dir)
+
+	if !dir:
+		push_error("ModLoader - Could not open user://tilesets")
+		return
+
 	dir.list_dir_begin()
 	var file_name = dir.get_next()
 	while file_name != "": # while theres a file
