@@ -2,6 +2,27 @@
 
 [ext_resource type="Script" uid="uid://kvxv75cn8l3n" path="res://scenes/ui/user_layer/user_layer.gd" id="1_oukth"]
 [ext_resource type="ButtonGroup" uid="uid://beegefiirte1m" path="res://resources/ui/LayersButtonGroup.tres" id="2_hgah8"]
+[ext_resource type="Shader" uid="uid://dhl55dpc66nwj" path="res://resources/shaders/force_change_color.gdshader" id="3_c7cvd"]
+[ext_resource type="Texture2D" uid="uid://cr7f77rg8rc2w" path="res://scenes/ui/user_layer/icons/arrow_up.png" id="3_fhohv"]
+[ext_resource type="Texture2D" uid="uid://g6g8htjk7e8g" path="res://scenes/ui/user_layer/icons/trash.png" id="4_c7cvd"]
+[ext_resource type="Texture2D" uid="uid://noc021tim6i5" path="res://scenes/ui/user_layer/icons/arrow_down.png" id="5_ggv2b"]
+[ext_resource type="Texture2D" uid="uid://cunqocbr38vcm" path="res://scenes/ui/user_layer/icons/pencil.png" id="6_7075u"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ggv2b"]
+shader = ExtResource("3_c7cvd")
+shader_parameter/new_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c7cvd"]
+shader = ExtResource("3_c7cvd")
+shader_parameter/new_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7075u"]
+shader = ExtResource("3_c7cvd")
+shader_parameter/new_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vt51c"]
+shader = ExtResource("3_c7cvd")
+shader_parameter/new_color = Color(1, 1, 1, 1)
 
 [node name="UserLayer" type="HBoxContainer" unique_id=1615856363 node_paths=PackedStringArray("checkbox", "delete_button", "move_up_button", "move_down_button", "rename_button")]
 size_flags_horizontal = 3
@@ -27,17 +48,81 @@ layout_mode = 2
 size_flags_horizontal = 10
 text = "⬆️"
 
+[node name="TextureRect" type="TextureRect" parent="LayerButtons/MoveUp" unique_id=1039316827]
+material = SubResource("ShaderMaterial_ggv2b")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.05357143
+anchor_right = 1.0535715
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_right = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_fhohv")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
 [node name="DeleteLayer" type="Button" parent="LayerButtons" unique_id=1179975269]
 layout_mode = 2
 size_flags_horizontal = 10
-text = " X "
+text = "⬆️"
+
+[node name="TextureRect" type="TextureRect" parent="LayerButtons/DeleteLayer" unique_id=1561635997]
+material = SubResource("ShaderMaterial_c7cvd")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.05357143
+anchor_right = 1.0535715
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_right = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_c7cvd")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
 
 [node name="MoveDown" type="Button" parent="LayerButtons" unique_id=1097893969]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "⬇️"
 
+[node name="TextureRect" type="TextureRect" parent="LayerButtons/MoveDown" unique_id=689331492]
+material = SubResource("ShaderMaterial_7075u")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.05357143
+anchor_right = 1.0535715
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_right = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_ggv2b")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
 [node name="Rename" type="Button" parent="LayerButtons" unique_id=174801065]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "✏️"
+
+[node name="TextureRect" type="TextureRect" parent="LayerButtons/Rename" unique_id=85673065]
+material = SubResource("ShaderMaterial_vt51c")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.05357143
+anchor_right = 1.0535715
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_right = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_7075u")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
