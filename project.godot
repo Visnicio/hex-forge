@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="an_actual_useful_hex_mapper"
+config/name="HexForge"
 config/version="Alpha 0.3"
 run/main_scene="uid://cv45u5rc2lx6p"
 config/features=PackedStringArray("4.6", "Forward Plus")
