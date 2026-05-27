@@ -103,7 +103,6 @@ Export the project as a `.pck` file in Godot (`Project → Export → Export PCK
 
 ```
 project root
-├── autload/                        # SaveManager, SignalBus (autoloads)
 ├── scripts/
 │   ├── autloads/                   # GlobalEditorData, ModLoader (autoloads)
 │   └── utils.gd                   # JSON helpers, modal factory
