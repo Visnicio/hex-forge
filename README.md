@@ -140,10 +140,10 @@ project root
 ```
 startup
   └─ ModLoader._ready()
-       ├─ ensures user://tilesets/ exists
-       └─ for each .pck → ProjectSettings.load_resource_pack()
-                        → load res://<mod>/mod_info.tres
-                        → store MapTilesetConfiguration in mod_tilesets{}
+	   ├─ ensures user://tilesets/ exists
+	   └─ for each .pck → ProjectSettings.load_resource_pack()
+						→ load res://<mod>/mod_info.tres
+						→ store MapTilesetConfiguration in mod_tilesets{}
 
 TileSetPickerModal._ready()
   ├─ load_samples_tilesets()   ← reads res://samples/
