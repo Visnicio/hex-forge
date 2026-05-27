@@ -1,4 +1,4 @@
-# An Actual Useful Hex Mapper
+# HexForge - Former "An Actual Useful Hex Mapper"
 
 A hex tile map editor built in **Godot 4.6**, focused on being genuinely usable for tabletop/worldbuilding maps. Supports multiple painting layers, undo/redo, save/load, and runtime tileset mods via `.pck` files.
 
