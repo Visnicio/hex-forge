@@ -44,17 +44,18 @@ layout_mode = 2
 size_flags_horizontal = 8
 
 [node name="MoveUp" type="Button" parent="LayerButtons" unique_id=2061633578]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-text = "⬆️"
 
 [node name="TextureRect" type="TextureRect" parent="LayerButtons/MoveUp" unique_id=1039316827]
 material = SubResource("ShaderMaterial_ggv2b")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.05357143
-anchor_right = 1.0535715
-anchor_bottom = 1.0
+anchor_left = 0.011808787
+anchor_top = 0.06451613
+anchor_right = 0.9881913
+anchor_bottom = 0.9354839
 offset_left = 1.5
 offset_right = -1.5
 grow_horizontal = 2
@@ -65,17 +66,18 @@ stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="DeleteLayer" type="Button" parent="LayerButtons" unique_id=1179975269]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-text = "⬆️"
 
 [node name="TextureRect" type="TextureRect" parent="LayerButtons/DeleteLayer" unique_id=1561635997]
 material = SubResource("ShaderMaterial_c7cvd")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.05357143
-anchor_right = 1.0535715
-anchor_bottom = 1.0
+anchor_left = 0.04449889
+anchor_top = 0.09677419
+anchor_right = 0.9555012
+anchor_bottom = 0.9032258
 offset_left = 1.5
 offset_right = -1.5
 grow_horizontal = 2
@@ -86,17 +88,18 @@ stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="MoveDown" type="Button" parent="LayerButtons" unique_id=1097893969]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-text = "⬇️"
 
 [node name="TextureRect" type="TextureRect" parent="LayerButtons/MoveDown" unique_id=689331492]
 material = SubResource("ShaderMaterial_7075u")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.05357143
-anchor_right = 1.0535715
-anchor_bottom = 1.0
+anchor_left = 0.011808787
+anchor_top = 0.06451613
+anchor_right = 0.9881913
+anchor_bottom = 0.9354839
 offset_left = 1.5
 offset_right = -1.5
 grow_horizontal = 2
@@ -107,17 +110,18 @@ stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="Rename" type="Button" parent="LayerButtons" unique_id=174801065]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-text = "✏️"
 
 [node name="TextureRect" type="TextureRect" parent="LayerButtons/Rename" unique_id=85673065]
 material = SubResource("ShaderMaterial_vt51c")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.05357143
-anchor_right = 1.0535715
-anchor_bottom = 1.0
+anchor_left = 0.077189
+anchor_top = 0.12903225
+anchor_right = 0.92281103
+anchor_bottom = 0.87096775
 offset_left = 1.5
 offset_right = -1.5
 grow_horizontal = 2
