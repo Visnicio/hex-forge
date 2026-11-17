@@ -328,6 +328,13 @@ sampler_visible = false
 sliders_visible = false
 hex_visible = false
 
+[node name="MarkerSizeSlider" type="HSlider" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer" unique_id=45420294]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 5.0
+value = 1.0
+
 [node name="DeleteMarkerButton" type="Button" parent="CanvasLayer/MarkerContainer/MarkerData/VBoxContainer" unique_id=1793202558]
 layout_mode = 2
 text = "Delete marker"
@@ -350,6 +357,21 @@ anchor_left = 0.2125
 anchor_top = 0.2962963
 anchor_right = 0.4125
 anchor_bottom = 0.8296296
+
+[node name="BottomTools" type="HBoxContainer" parent="CanvasLayer" unique_id=126527806]
+anchors_preset = -1
+anchor_left = 0.34583333
+anchor_top = 0.9
+anchor_right = 0.65416664
+anchor_bottom = 0.96481484
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_group_ = true
+metadata/_edit_use_anchors_ = true
+
+[node name="HexCrawlTools" type="Button" parent="CanvasLayer/BottomTools" unique_id=1883194279]
+layout_mode = 2
+text = "Hex Crawl Tools"
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=366084886]
 anchors_preset = 15

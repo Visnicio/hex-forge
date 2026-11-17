@@ -1,5 +1,7 @@
 class_name WorldMarker extends Sprite2D
 
+const DEFAULT_MARKER_SCALE: Vector2 = Vector2(0.017, 0.018)
+
 @export var marker_color: Color:
 	set(new_value):
 		marker_color = new_value

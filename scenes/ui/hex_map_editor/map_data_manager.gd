@@ -102,41 +102,49 @@ func load_map_into_editor(map_path: String) -> void:
 	
 	last_map_loaded_path = map_path
 
+
+## Main function that creates the map data and saving in the json
 func save_current_map(map_path: String, map_tileset_configuration: MapTilesetConfiguration) -> void:
-	var map_data = {}
+	var map_data: MapData  = MapData.new()
 	map_data.map_name = map_name_input.text
 	map_data.markers = _get_markers_to_save()
-	map_data.map_tileset_configuration = map_tileset_configuration.resource_path
+	map_data.layers = _get_layers_to_save()
+	map_data.map_tileset_configuration = map_tileset_configuration.tileset_resource
 	map_data.manifest_version = ProjectSettings.get_setting("application/config/version") 
-	
-	map_data.layers = {}
-	
-	# Create the .cells  key is cell_coord and value is dictionary
-	for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
-		map_data.layers[layer.layer_name] = {}
-		map_data.layers[layer.layer_name].cells = {}
-		map_data.layers[layer.layer_name].index = GlobalEditorData.user_layers.get_user_layer_index(layer)
-		for cell_coord: Vector2i in layer.layer_tilemap_ref.get_used_cells(): # loop for the used cells to create the cell data to save
-			map_data.layers[layer.layer_name].cells[cell_coord] = {
-				"atlas_coords": layer.layer_tilemap_ref.get_cell_atlas_coords(cell_coord),
-				"source_id": layer.layer_tilemap_ref.get_cell_source_id(cell_coord)
-			}
-	
-	SaveManager.save_map(map_path, map_file_dialog.current_file, map_data)
+	SaveManager.save_map(map_path, map_file_dialog.current_file, MapData.to_dict(map_data))
 
 
-func _get_markers_to_save() -> Dictionary:
-	var result := {}
+func _get_markers_to_save() -> Dictionary[StringName, MarkerData]:
+	var result: Dictionary[StringName, MarkerData] = {}
 	
 	for child: WorldMarker in markers.get_children():
 		if child is WorldMarker:
-			var marker_data = {}
+			var marker_data: MarkerData = MarkerData.new()
 			marker_data.global_position = child.global_position
 			marker_data.marker_name = child.marker_name
 			marker_data.marker_color = child.marker_color
 			marker_data.marker_description = child.marker_description
+			marker_data.marker_scale = child.scale
+			
 			result[child.name] = marker_data
 	return result
+
+
+func _get_layers_to_save() -> Dictionary[StringName, LayerData]:
+	var result_layers: Dictionary[StringName, LayerData] = {}
+	
+	# Create the .cells  key is cell_coord and value is dictionary
+	for layer: UserLayer in GlobalEditorData.user_layers.get_all_layers():
+		result_layers[layer.layer_name] = LayerData.new()
+		result_layers[layer.layer_name].cells = {}
+		result_layers[layer.layer_name].index = GlobalEditorData.user_layers.get_user_layer_index(layer)
+		for cell_coord: Vector2i in layer.layer_tilemap_ref.get_used_cells(): # loop for the used cells to create the cell data to save
+			result_layers[layer.layer_name].cells[cell_coord] = {
+				"atlas_coords": layer.layer_tilemap_ref.get_cell_atlas_coords(cell_coord),
+				"source_id": layer.layer_tilemap_ref.get_cell_source_id(cell_coord)
+			}
+			
+	return result_layers
 
 ## loads the layers from save data sorted by their index (when writing the save data we dont know which order the engine is gonna write to the file)
 func _load_sorted_layers(map_data: Dictionary) -> void:

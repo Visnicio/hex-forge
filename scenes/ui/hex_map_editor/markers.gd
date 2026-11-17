@@ -14,6 +14,8 @@ class_name MarkersManager extends Node
 @export var marker_color_input: ColorPicker
 @export var delete_marker_button: Button
 
+@onready var marker_size_slider: HSlider = %MarkerSizeSlider
+
 var is_placing: bool = false
 var current_preview: Sprite2D = null
 var current_selected_marker: WorldMarker = null
@@ -31,7 +33,8 @@ func _ready() -> void:
 		current_selected_marker.queue_free()
 		marker_data_container.hide()
 		)
-	marker_data_container.hide()
+	marker_size_slider.value_changed.connect(_on_marker_slider_value_changed)
+	marker_data_container.hide()	
 	SignalBus.marker_pressed.connect(_on_marker_pressed)
 	
 func _input(_event: InputEvent) -> void:
@@ -81,3 +84,8 @@ func _on_marker_color_changed(new_color: Color) -> void:
 
 func _on_marker_description_changed() -> void:
 	current_selected_marker.marker_description = marker_description_input.text
+
+
+func _on_marker_slider_value_changed(value: float) -> void:
+	var scaled_value: Vector2 = WorldMarker.DEFAULT_MARKER_SCALE * value
+	current_selected_marker.scale = scaled_value
