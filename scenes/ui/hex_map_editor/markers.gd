@@ -13,6 +13,8 @@ class_name MarkersManager extends Node
 @export var marker_description_input: TextEdit
 @export var marker_color_input: ColorPicker
 @export var delete_marker_button: Button
+## Where in the UI the panel will tween to when hid
+@export var hidden_panel_position: Vector2
 
 @onready var marker_size_slider: HSlider = %MarkerSizeSlider
 
@@ -27,15 +29,21 @@ func _ready() -> void:
 	marker_color_input.color_changed.connect(_on_marker_color_changed)
 	marker_description_input.text_changed.connect(_on_marker_description_changed)
 	close_data_container_button.pressed.connect(func():
-		marker_data_container.hide()
+		# marker_data_container.hide()
+		SignalBus.marker_data_panel_dismissed.emit(current_selected_marker)
 		)
 	delete_marker_button.pressed.connect(func():
 		current_selected_marker.queue_free()
-		marker_data_container.hide()
+		# marker_data_container.hide()
+		SignalBus.marker_data_panel_dismissed.emit(null)
 		)
 	marker_size_slider.value_changed.connect(_on_marker_slider_value_changed)
 	marker_data_container.hide()	
+	
 	SignalBus.marker_pressed.connect(_on_marker_pressed)
+	SignalBus.marker_data_panel_dismissed.connect(func(marker):
+		hide_marker_data_panel()
+	)
 	
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("left_click") and is_placing:
@@ -53,7 +61,7 @@ func _input(_event: InputEvent) -> void:
 
 func _on_marker_pressed(marker: WorldMarker) -> void:
 	select_world_marker(marker)
-	marker_data_container.show()
+	show_marker_data_panel()
 
 func _on_place_poi_button_pressed() -> void:
 	if is_placing: return
@@ -89,3 +97,14 @@ func _on_marker_description_changed() -> void:
 func _on_marker_slider_value_changed(value: float) -> void:
 	var scaled_value: Vector2 = WorldMarker.DEFAULT_MARKER_SCALE * value
 	current_selected_marker.scale = scaled_value
+
+func show_marker_data_panel() -> void:
+	marker_data_container.visible = true
+	var t: Tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_ELASTIC)
+	t.tween_property(marker_data_container, "offset_transform_position", Vector2.ZERO, .3).from_current()
+	
+	
+func hide_marker_data_panel() -> void:
+	marker_data_container.visible = true
+	var t: Tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_ELASTIC)
+	t.tween_property(marker_data_container, "offset_transform_position", hidden_panel_position, .3).from_current()

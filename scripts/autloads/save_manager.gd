@@ -18,7 +18,7 @@ func save_map(map_save_path: String, _map_name: String, map_data: Dictionary) ->
 	return false
 
 
-## Loads a map file and return its contents
+## Loads a map file and return its contents as raw dictionary, without parsing to [code]MapData[/code]
 func load_map(map_path: String) -> Dictionary:
 	if not FileAccess.file_exists(map_path):
 		print("No map file found")

@@ -70,35 +70,26 @@ func on_file_selected(map_path: String) -> void:
 	elif current_state == State.LOADING:
 		load_map_into_editor(map_path);
 
-## Loads a mapa into the editor... hm
+## Loads a map into the editor, replacing whatever is currently loaded
 func load_map_into_editor(map_path: String) -> void:
 	editor.clear_maps()
 	markers.clear_all_markers()
 	for child in editor.tiles_grid_container.get_children():
 		child.queue_free()
 	
-	var map_data: Dictionary = SaveManager.load_map(map_path)
-	map_name_input.text = map_data.get("map_name", "No Name Saved")
-	var map_config_data: MapTilesetConfiguration = null
-	if map_data.has("map_tileset_configuration"):
-		# we save the resource path to we can load it
-		map_config_data = load(map_data.get("map_tileset_configuration"))
-	editor.current_map_tileset_configuration = map_config_data
-	editor.load_tileset_for_map(map_config_data)
+	var map_data: MapData = MapData.from_dict(SaveManager.load_map(map_path))
+	
+	map_name_input.text = map_data.map_name
+	
+	editor.current_map_tileset_configuration = map_data.map_tileset_configuration
+	if map_data.map_tileset_configuration:
+		editor.load_tileset_for_map(map_data.map_tileset_configuration)
 	
 	_load_sorted_layers(map_data)
 	
 	GlobalEditorData.user_layers._refresh_layer_visuals()
 	
-	# load markers
-	if map_data.has("markers"):
-		for marker_name: String in map_data.markers.keys():
-			var new_world_marker = world_marker_scene.instantiate() as WorldMarker
-			new_world_marker.global_position = str_to_var("Vector2"+map_data.markers[marker_name].global_position) 
-			markers.add_child(new_world_marker)
-			new_world_marker.marker_description = map_data.markers[marker_name].marker_description
-			new_world_marker.marker_color = str_to_var("Color"+map_data.markers[marker_name].marker_color) 
-			new_world_marker.marker_name = map_data.markers[marker_name].marker_name
+	_load_markers(map_data)
 	
 	last_map_loaded_path = map_path
 
@@ -109,7 +100,7 @@ func save_current_map(map_path: String, map_tileset_configuration: MapTilesetCon
 	map_data.map_name = map_name_input.text
 	map_data.markers = _get_markers_to_save()
 	map_data.layers = _get_layers_to_save()
-	map_data.map_tileset_configuration = map_tileset_configuration.tileset_resource
+	map_data.map_tileset_configuration = map_tileset_configuration
 	map_data.manifest_version = ProjectSettings.get_setting("application/config/version") 
 	SaveManager.save_map(map_path, map_file_dialog.current_file, MapData.to_dict(map_data))
 
@@ -147,36 +138,28 @@ func _get_layers_to_save() -> Dictionary[StringName, LayerData]:
 	return result_layers
 
 ## loads the layers from save data sorted by their index (when writing the save data we dont know which order the engine is gonna write to the file)
-func _load_sorted_layers(map_data: Dictionary) -> void:
-	var sorted_layers_data: Array = [] # Array[Dictionary]
-	
-	for layer_name: String in map_data.layers:
-		var layer_content = map_data.layers[layer_name]
-		layer_content["_temp_name_ref"] = layer_name 
-		sorted_layers_data.append(layer_content)
-
-	sorted_layers_data.sort_custom(func(a, b):
-		return a.get("index", 0) < b.get("index", 0)
+func _load_sorted_layers(map_data: MapData) -> void:
+	var sorted_layer_names: Array = map_data.layers.keys()
+	sorted_layer_names.sort_custom(func(a: StringName, b: StringName):
+		return map_data.layers[a].index < map_data.layers[b].index
 	)
 
-	for layer_data: Dictionary in sorted_layers_data:
-		var layer_name = layer_data["_temp_name_ref"]
+	for layer_name: StringName in sorted_layer_names:
+		var layer_data: LayerData = map_data.layers[layer_name]
+		var new_layer: UserLayer = GlobalEditorData.user_layers.add_new_layer(layer_name)
 		
-		GlobalEditorData.user_layers.add_new_layer(layer_name)
-		
-		var new_layer_index = GlobalEditorData.user_layers.all_user_layers.size() - 1
-		var new_layer = GlobalEditorData.user_layers.all_user_layers[new_layer_index]
-		
-		if layer_data.has("cells"):
-			var cells = layer_data.cells
-			for cell_data_key: String in cells.keys():
-				var key_as_vector: Vector2i = str_to_var("Vector2i"+cell_data_key) as Vector2i
-				var cell_content: Dictionary = cells[cell_data_key]
-				
-				var source_id: int = 0
-				if cell_content.has("source_id"): 
-					source_id = cell_content.get("source_id")
-				
-				var atlas_coords = str_to_var("Vector2i"+str(cell_content.get("atlas_coords", "(0,0)")))
-				
-				new_layer.layer_tilemap_ref.set_cell(key_as_vector, source_id, atlas_coords)
+		for cell_coord: Vector2i in layer_data.cells.keys():
+			var cell_content: Dictionary = layer_data.cells[cell_coord]
+			new_layer.layer_tilemap_ref.set_cell(cell_coord, cell_content.source_id, cell_content.atlas_coords)
+
+
+## Instantiates the world markers from save data
+func _load_markers(map_data: MapData) -> void:
+	for marker_data: MarkerData in map_data.markers.values():
+		var new_world_marker: WorldMarker = world_marker_scene.instantiate() as WorldMarker
+		new_world_marker.global_position = marker_data.global_position
+		markers.add_child(new_world_marker)
+		new_world_marker.marker_description = marker_data.marker_description
+		new_world_marker.marker_color = marker_data.marker_color
+		new_world_marker.marker_name = marker_data.marker_name
+		new_world_marker.scale = marker_data.marker_scale
