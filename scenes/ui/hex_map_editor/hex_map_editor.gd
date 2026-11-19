@@ -107,6 +107,17 @@ func _input(event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_ESCAPE) and current_selected_tile_coords != Vector2i(-1, -1):
 		deselect_current_pencil()
 
+func _unhandled_input(event: InputEvent) -> void:
+	var has_a_layer_selected_but_no_pencil: bool = current_selected_layer != null and !is_pencil_selected()
+	if event is InputEventMouseMotion and has_a_layer_selected_but_no_pencil:
+		var mouse_pos: Vector2 = pencil_tilemap.to_local(get_global_mouse_position())
+		var mouse_position_on_map: Vector2i = current_selected_layer.local_to_map(mouse_pos) 
+		if current_selected_layer.get_cell_tile_data(mouse_position_on_map) != null:
+			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+		else:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+		
+
 func _on_tileset_picker_button_pressed() -> void:
 	tileset_picker_modal.show()
 
@@ -122,6 +133,7 @@ func _create_tile_button(button_texture: Texture2D, buttons_container: GridConta
 		current_selected_tile_coords = original_tile_coords
 		current_selected_tile_source_id = tile_source_id
 		print("pressed button: ", original_tile_coords)
+		Input.set_default_cursor_shape(Input.CURSOR_CROSS)
 	)
 	
 	buttons_container.add_child(new_button)
@@ -194,6 +206,7 @@ func is_mouse_on_tools() -> bool:
 
 func deselect_current_pencil() -> void:
 	current_selected_tile_coords = Vector2i(-1, -1)
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 func is_pencil_selected() -> bool:
 	return current_selected_tile_coords != Vector2i(-1, -1)
@@ -227,6 +240,9 @@ func _paint_at_mouse():
 	current_selected_layer.set_cell(mouse_pos, current_selected_tile_source_id, current_selected_tile_coords)
 
 func _erase_at_mouse():
+	if current_selected_layer == null: 
+		return	
+	
 	var mouse_pos = current_selected_layer.local_to_map(current_selected_layer.to_local(get_global_mouse_position()))
 	
 	var current_source = current_selected_layer.get_cell_source_id(mouse_pos)
