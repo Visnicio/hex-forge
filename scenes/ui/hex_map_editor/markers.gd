@@ -100,11 +100,11 @@ func _on_marker_slider_value_changed(value: float) -> void:
 
 func show_marker_data_panel() -> void:
 	marker_data_container.visible = true
-	var t: Tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_ELASTIC)
+	var t: Tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	t.tween_property(marker_data_container, "offset_transform_position", Vector2.ZERO, .3).from_current()
 	
 	
 func hide_marker_data_panel() -> void:
 	marker_data_container.visible = true
-	var t: Tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_ELASTIC)
+	var t: Tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	t.tween_property(marker_data_container, "offset_transform_position", hidden_panel_position, .3).from_current()
