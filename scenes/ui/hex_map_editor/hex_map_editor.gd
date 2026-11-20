@@ -252,6 +252,7 @@ func _paint_at_mouse():
 		}
 	
 	current_selected_layer.set_cell(mouse_pos, current_selected_tile_source_id, current_pencil_tile_coords)
+	SignalBus.map_cells_changed.emit()
 
 func _erase_at_mouse():
 	if current_selected_layer == null: 
@@ -269,6 +270,7 @@ func _erase_at_mouse():
 		}
 		
 	current_selected_layer.set_cell(mouse_pos, -1, Vector2i(-1, -1))
+	SignalBus.map_cells_changed.emit()
 
 func _commit_stroke(action_name: String, is_erasing: bool):
 	_is_painting = false
@@ -292,6 +294,9 @@ func _commit_stroke(action_name: String, is_erasing: bool):
 
 func _connect_signals() -> void:
 	tileset_picker_button.pressed.connect(_on_tileset_picker_button_pressed)
+
+	# undo/redo replays set_cell through bound methods, version_changed fires on every commit, undo and redo
+	undo_redo.version_changed.connect(SignalBus.map_cells_changed.emit)
 	
 	controls_button.pressed.connect(func():
 		controls_panel.show()

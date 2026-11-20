@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://doqcp1ne1qjwu" path="res://scenes/ui/controls_and_info_modal/controls_and_info_modal.tscn" id="9_q5rbk"]
 [ext_resource type="PackedScene" uid="uid://btisvs13umlqr" path="res://scenes/ui/hex_map_editor/hex_data_panel/hex_data_panel.tscn" id="11_t1up2"]
 [ext_resource type="Script" uid="uid://dlds5pytvkays" path="res://scenes/ui/hex_map_editor/hex_data_store.gd" id="12_hxstr"]
+[ext_resource type="Script" uid="uid://t1fajir5wvoo" path="res://scenes/ui/hex_map_editor/map_size_label.gd" id="13_mpsz"]
 
 [node name="HexMapEditor" type="Node2D" unique_id=1713256914 node_paths=PackedStringArray("tileset_picker_button", "tiles_grid_container", "map_name_input", "main_background", "camera", "main_panels", "pencil_tilemap", "main_canvas", "tileset_picker_modal", "controls_button", "controls_panel")]
 script = ExtResource("1_ov8ee")
@@ -381,6 +382,20 @@ metadata/_edit_use_anchors_ = true
 [node name="HexCrawlTools" type="Button" parent="CanvasLayer/BottomTools" unique_id=1883194279]
 layout_mode = 2
 text = "Hex Crawl Tools"
+
+[node name="MapSizeLabel" type="Label" parent="CanvasLayer" unique_id=1363045319 node_paths=PackedStringArray("tilemaps_holder")]
+anchors_preset = -1
+anchor_left = 0.17777777
+anchor_top = 0.9712963
+anchor_right = 0.33402777
+anchor_bottom = 0.9925926
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "Map size: 0 × 0 hexes"
+script = ExtResource("13_mpsz")
+tilemaps_holder = NodePath("../../LayersTilemaps")
+metadata/_edit_use_anchors_ = true
 
 [node name="HexDataPanel" parent="CanvasLayer" unique_id=1916003888 instance=ExtResource("11_t1up2")]
 

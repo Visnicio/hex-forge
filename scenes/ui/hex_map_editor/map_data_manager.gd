@@ -92,7 +92,8 @@ func load_map_into_editor(map_path: String) -> void:
 		editor.load_tileset_for_map(map_data.map_tileset_configuration)
 	
 	_load_sorted_layers(map_data)
-	
+	SignalBus.map_cells_changed.emit()
+
 	GlobalEditorData.user_layers._refresh_layer_visuals()
 	
 	_load_markers(map_data)
