@@ -28,7 +28,7 @@ enum MapLayer {
 
 
 ## Holds the coords for the current selected tile to query it on the tileset, set it to (-1,-1) to clear the pencil
-var current_selected_tile_coords: Vector2i = Vector2i(-1, -1)
+var current_pencil_tile_coords: Vector2i = Vector2i(-1, -1)
 ## current tile source id in case the tileset has more than one souce
 var current_selected_tile_source_id: int = -1
 ## Current TileMapLayer selected for painting
@@ -61,14 +61,14 @@ func _process(_delta: float) -> void:
 	main_background.global_position = camera.get_screen_center_position() - main_background.get_rect().size / 2 # hacky to keep the background on screen but behind canvas layer
 	
 	pencil_tilemap.clear()
-	if current_selected_tile_coords != Vector2i(-1, -1) and current_selected_tile_source_id != -1:
+	if current_pencil_tile_coords != Vector2i(-1, -1) and current_selected_tile_source_id != -1:
 		var mouse_pos = pencil_tilemap.to_local(get_global_mouse_position())
-		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_selected_tile_coords)
+		pencil_tilemap.set_cell(pencil_tilemap.local_to_map(mouse_pos), current_selected_tile_source_id, current_pencil_tile_coords)
 		#pencil_tilemap.z_index = current_selected_layer.z_index
 
 func _input(event: InputEvent) -> void:
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
-	if is_mouse_on_tools() or is_typing_name or current_selected_tile_coords == Vector2i(-1, -1):
+	if is_mouse_on_tools() or is_typing_name or current_pencil_tile_coords == Vector2i(-1, -1):
 		return
 	else:
 		# --- Painting Logic (Left Button) ---
@@ -104,11 +104,13 @@ func _input(event: InputEvent) -> void:
 		get_viewport().gui_release_focus()
 		
 	# deselect current pencil on esc
-	if Input.is_key_pressed(KEY_ESCAPE) and current_selected_tile_coords != Vector2i(-1, -1):
+	if Input.is_key_pressed(KEY_ESCAPE) and current_pencil_tile_coords != Vector2i(-1, -1):
 		deselect_current_pencil()
 
 func _unhandled_input(event: InputEvent) -> void:
 	var has_a_layer_selected_but_no_pencil: bool = current_selected_layer != null and !is_pencil_selected()
+	
+	# checks for hovering a tile while no pencil
 	if event is InputEventMouseMotion and has_a_layer_selected_but_no_pencil:
 		var mouse_pos: Vector2 = pencil_tilemap.to_local(get_global_mouse_position())
 		var mouse_position_on_map: Vector2i = current_selected_layer.local_to_map(mouse_pos) 
@@ -116,6 +118,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 		else:
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+	
+	# checks for clicking on a tile while no pencil
+	if event is InputEventMouseButton and has_a_layer_selected_but_no_pencil:
+		
+		if event.button_index != MouseButton.MOUSE_BUTTON_LEFT:
+			return
+		
+		var mouse_pos: Vector2 = pencil_tilemap.to_local(get_global_mouse_position())
+		var mouse_position_on_map: Vector2i = current_selected_layer.local_to_map(mouse_pos)
+		if current_selected_layer.get_cell_tile_data(mouse_position_on_map) != null:
+			SignalBus.hex_selected.emit(mouse_position_on_map)
 		
 
 func _on_tileset_picker_button_pressed() -> void:
@@ -130,7 +143,7 @@ func _create_tile_button(button_texture: Texture2D, buttons_container: GridConta
 	new_button.custom_minimum_size = Vector2(64, 64) 
 	
 	new_button.pressed.connect(func():
-		current_selected_tile_coords = original_tile_coords
+		current_pencil_tile_coords = original_tile_coords
 		current_selected_tile_source_id = tile_source_id
 		print("pressed button: ", original_tile_coords)
 		Input.set_default_cursor_shape(Input.CURSOR_CROSS)
@@ -205,11 +218,11 @@ func is_mouse_on_tools() -> bool:
 
 
 func deselect_current_pencil() -> void:
-	current_selected_tile_coords = Vector2i(-1, -1)
+	current_pencil_tile_coords = Vector2i(-1, -1)
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 func is_pencil_selected() -> bool:
-	return current_selected_tile_coords != Vector2i(-1, -1)
+	return current_pencil_tile_coords != Vector2i(-1, -1)
 
 
 # Starts the stroke (clears the buffer)
@@ -228,7 +241,7 @@ func _paint_at_mouse():
 	var current_source = current_selected_layer.get_cell_source_id(mouse_pos)
 	var current_atlas = current_selected_layer.get_cell_atlas_coords(mouse_pos)
 	
-	if current_source == current_selected_tile_source_id and current_atlas == current_selected_tile_coords:
+	if current_source == current_selected_tile_source_id and current_atlas == current_pencil_tile_coords:
 		return
 
 	if not _current_stroke_buffer.has(mouse_pos):
@@ -237,7 +250,7 @@ func _paint_at_mouse():
 			"atlas": current_atlas
 		}
 	
-	current_selected_layer.set_cell(mouse_pos, current_selected_tile_source_id, current_selected_tile_coords)
+	current_selected_layer.set_cell(mouse_pos, current_selected_tile_source_id, current_pencil_tile_coords)
 
 func _erase_at_mouse():
 	if current_selected_layer == null: 
@@ -268,7 +281,7 @@ func _commit_stroke(action_name: String, is_erasing: bool):
 		if is_erasing:
 			undo_redo.add_do_method(current_selected_layer.set_cell.bind(cell_pos, -1, Vector2i(-1, -1)))
 		else:
-			undo_redo.add_do_method(current_selected_layer.set_cell.bind(cell_pos, current_selected_tile_source_id, current_selected_tile_coords))
+			undo_redo.add_do_method(current_selected_layer.set_cell.bind(cell_pos, current_selected_tile_source_id, current_pencil_tile_coords))
 			
 	for cell_pos in _current_stroke_buffer.keys():
 		var old_data = _current_stroke_buffer[cell_pos]

@@ -1,3 +1,4 @@
+## Data layout/save file of a map, contains relevant data to store and load from a map
 class_name MapData extends RefCounted
 
 ## Key is layer name on editor and value is the layer data
@@ -9,6 +10,8 @@ var map_name: String
 var map_tileset_configuration: MapTilesetConfiguration
 ## Key is marker node name and value is MarkerData
 var markers: Dictionary[StringName, MarkerData]
+## Key is hex position in tile coords, value is the hex data
+var hexes_data: Dictionary[Vector2i, HexData] = {}
 
 static func to_dict(data: MapData) -> Dictionary:
 
@@ -20,6 +23,10 @@ static func to_dict(data: MapData) -> Dictionary:
 	for marker_name in data.markers.keys():
 		markers_as_dict[marker_name] = MarkerData.to_dict(data.markers[marker_name])
 
+	var hexes_as_dict: Dictionary = {}
+	for tile_coord: Vector2i in data.hexes_data.keys():
+		hexes_as_dict[tile_coord] = HexData.to_dict(data.hexes_data[tile_coord])
+
 	var tileset_config_path: String = ""
 	if data.map_tileset_configuration:
 		tileset_config_path = data.map_tileset_configuration.resource_path
@@ -29,7 +36,8 @@ static func to_dict(data: MapData) -> Dictionary:
 		"manifest_version": data.manifest_version,
 		"map_tileset_configuration": tileset_config_path,
 		"map_name": data.map_name,
-		"markers": markers_as_dict
+		"markers": markers_as_dict,
+		"hexes_data": hexes_as_dict
 	}
 
 ## Parses the raw dictionary read from the save json into a [code]MapData[/code]
@@ -52,6 +60,12 @@ static func from_dict(dict: Dictionary) -> MapData:
 	var raw_markers: Dictionary = dict.get("markers", {})
 	for marker_key: String in raw_markers.keys():
 		new.markers[marker_key] = MarkerData.from_dict(raw_markers[marker_key])
+
+	# maps saved before hex data existed dont have this key, so it defaults to empty
+	var raw_hexes: Dictionary = dict.get("hexes_data", {})
+	for raw_coord: String in raw_hexes.keys():
+		var hex_data: HexData = HexData.from_dict(raw_hexes[raw_coord])
+		new.hexes_data[hex_data.tile_coord] = hex_data
 
 	return new
 

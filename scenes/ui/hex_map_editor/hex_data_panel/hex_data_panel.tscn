@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://btisvs13umlqr"]
+
+[ext_resource type="Script" uid="uid://dvtfvsxq0cup5" path="res://scenes/ui/hex_map_editor/hex_data_panel/hex_data_panel.gd" id="1_ubvjc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wty20"]
+bg_color = Color(0.05490196, 0.06666667, 0.12941177, 1)
+shadow_offset = Vector2(0, 8)
+
+[node name="HexDataPanel" type="Panel" unique_id=1916003888]
+anchors_preset = -1
+anchor_left = 0.31302083
+anchor_top = 0.1675926
+anchor_right = 0.6869792
+anchor_bottom = 0.9314815
+offset_top = -1.5258789e-05
+grow_horizontal = 2
+grow_vertical = 2
+offset_transform_enabled = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_wty20")
+script = ExtResource("1_ubvjc")
+
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=2065702788]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.047272727
+grow_horizontal = 2
+
+[node name="PanelName" type="Label" parent="TopBar" unique_id=478565715]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hex Data"
+horizontal_alignment = 1
+
+[node name="CloseHexDataButton" type="Button" parent="TopBar" unique_id=168431709]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+text = "X"
+
+[node name="HexFreetext" type="TextEdit" parent="." unique_id=688365319]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.16295265
+anchor_top = 0.2739394
+anchor_right = 0.83704734
+anchor_bottom = 0.95272726
+placeholder_text = "Insert custom info here"
+wrap_mode = 1
+
+[node name="HexName" type="LineEdit" parent="." unique_id=2099159409]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.27855152
+anchor_top = 0.16848485
+anchor_right = 0.69220054
+anchor_bottom = 0.21575758
+offset_left = 1.5258789e-05
+placeholder_text = "Hex Name"
+alignment = 1

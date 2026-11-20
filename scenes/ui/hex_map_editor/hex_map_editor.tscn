@@ -8,9 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://dwcsyy060sev0" path="res://scenes/entities/world_marker/world_marker.tscn" id="5_erscx"]
 [ext_resource type="Script" uid="uid://5mk43xuibhy0" path="res://scenes/ui/hex_map_editor/markers.gd" id="5_ttthk"]
 [ext_resource type="PackedScene" uid="uid://b36tetv3an26n" path="res://scenes/ui/tileset_picker_modal/tileset_picker_modal.tscn" id="7_11v6s"]
-[ext_resource type="Script" uid="uid://c5x8f7ao3sk0y" path="res://scenes/ui/hex_map_editor/hex_tools.gd" id="7_c3vpu"]
 [ext_resource type="PackedScene" uid="uid://dlgy81il8kt5t" path="res://scenes/ui/user_layers/user_layers.tscn" id="7_q5rbk"]
 [ext_resource type="PackedScene" uid="uid://doqcp1ne1qjwu" path="res://scenes/ui/controls_and_info_modal/controls_and_info_modal.tscn" id="9_q5rbk"]
+[ext_resource type="PackedScene" uid="uid://btisvs13umlqr" path="res://scenes/ui/hex_map_editor/hex_data_panel/hex_data_panel.tscn" id="11_t1up2"]
+[ext_resource type="Script" uid="uid://dlds5pytvkays" path="res://scenes/ui/hex_map_editor/hex_data_store.gd" id="12_hxstr"]
 
 [node name="HexMapEditor" type="Node2D" unique_id=1713256914 node_paths=PackedStringArray("tileset_picker_button", "tiles_grid_container", "map_name_input", "main_background", "camera", "main_panels", "pencil_tilemap", "main_canvas", "tileset_picker_modal", "controls_button", "controls_panel")]
 script = ExtResource("1_ov8ee")
@@ -28,7 +29,7 @@ controls_panel = NodePath("CanvasLayer/ControlsAndInfoModal")
 metadata/_edit_vertical_guides_ = [959.0]
 metadata/_edit_horizontal_guides_ = [541.0, 167.0]
 
-[node name="MapDataManager" type="Node" parent="." unique_id=1252024652 node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers")]
+[node name="MapDataManager" type="Node" parent="." unique_id=1252024652 node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers", "hex_data_store")]
 script = ExtResource("4_u8lkl")
 map_file_dialog = NodePath("../CanvasLayer/Sidebar/Tools/MapPathDialog")
 new_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/NewMapButton")
@@ -39,6 +40,7 @@ map_name_input = NodePath("../CanvasLayer/TopBar/MapSettings/MapName")
 main_canvas = NodePath("../CanvasLayer")
 markers = NodePath("../Markers")
 world_marker_scene = ExtResource("5_erscx")
+hex_data_store = NodePath("../HexDataStore")
 
 [node name="Markers" type="Node" parent="." unique_id=1358410324 node_paths=PackedStringArray("editor", "close_data_container_button", "place_poi_button", "marker_data_container", "marker_name_input", "marker_description_input", "marker_color_input", "delete_marker_button")]
 script = ExtResource("5_ttthk")
@@ -54,14 +56,14 @@ marker_color_input = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxCon
 delete_marker_button = NodePath("../CanvasLayer/MarkerContainer/MarkerData/VBoxContainer/DeleteMarkerButton")
 hidden_panel_position = Vector2(320, 0)
 
+[node name="HexDataStore" type="Node" parent="." unique_id=1413108661]
+script = ExtResource("12_hxstr")
+
 [node name="CameraInput" type="Node" parent="." unique_id=1069154919 node_paths=PackedStringArray("editor", "target_camera", "main_canvas")]
 script = ExtResource("3_n2lvb")
 editor = NodePath("..")
 target_camera = NodePath("../Camera2D")
 main_canvas = NodePath("../CanvasLayer")
-
-[node name="HexTools" type="Node" parent="." unique_id=2067143407]
-script = ExtResource("7_c3vpu")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=218697405]
 
@@ -379,6 +381,8 @@ metadata/_edit_use_anchors_ = true
 [node name="HexCrawlTools" type="Button" parent="CanvasLayer/BottomTools" unique_id=1883194279]
 layout_mode = 2
 text = "Hex Crawl Tools"
+
+[node name="HexDataPanel" parent="CanvasLayer" unique_id=1916003888 instance=ExtResource("11_t1up2")]
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=366084886]
 anchors_preset = 15

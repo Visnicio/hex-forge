@@ -11,3 +11,9 @@ signal layer_selected(new_layer_selected: UserLayer)
 
 @warning_ignore("unused_signal")
 signal layer_reorder_requested(layer: UserLayer, direction: int)
+
+@warning_ignore("unused_signal")
+signal hex_selected(position_in_tile_coords: Vector2i)
+
+@warning_ignore("unused_signal")
+signal hex_dismissed()

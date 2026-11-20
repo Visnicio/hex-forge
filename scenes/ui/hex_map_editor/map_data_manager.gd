@@ -1,5 +1,6 @@
 ## Script used to handle saving and loading data from a save file into the editor tiles and other things like markers
-## this is here to our SaveManager can exist without the burden of a map editor (a.k.a headless save manager)
+## this is here so our SaveManager can exist without the burden of a map editor (a.k.a headless save manager)
+## PS: future vini here, I dont what that was supposed to mean...
 class_name MapDataManager extends Node
 
 enum State {
@@ -18,6 +19,9 @@ enum State {
 @export_group("Markers")
 @export var markers: MarkersManager
 @export var world_marker_scene: PackedScene
+
+@export_group("Hexes")
+@export var hex_data_store: HexDataStore
 
 var editor: HexMapEditor
 var current_state: State = State.LOADING
@@ -61,6 +65,8 @@ func _on_new_map_pressed() -> void:
 	markers.clear_all_markers()
 	GlobalEditorData.user_layers.delete_all_layers()
 	GlobalEditorData.user_layers.add_base_layers()
+	SignalBus.hex_dismissed.emit() # panel could be open with a hex from the old map
+	hex_data_store.clear()
 
 
 func on_file_selected(map_path: String) -> void:
@@ -90,7 +96,10 @@ func load_map_into_editor(map_path: String) -> void:
 	GlobalEditorData.user_layers._refresh_layer_visuals()
 	
 	_load_markers(map_data)
-	
+
+	SignalBus.hex_dismissed.emit() # panel could be open with a hex from the old map
+	hex_data_store.load_hexes(map_data.hexes_data)
+
 	last_map_loaded_path = map_path
 
 
@@ -100,8 +109,9 @@ func save_current_map(map_path: String, map_tileset_configuration: MapTilesetCon
 	map_data.map_name = map_name_input.text
 	map_data.markers = _get_markers_to_save()
 	map_data.layers = _get_layers_to_save()
+	map_data.hexes_data = hex_data_store.get_hexes_to_save()
 	map_data.map_tileset_configuration = map_tileset_configuration
-	map_data.manifest_version = ProjectSettings.get_setting("application/config/version") 
+	map_data.manifest_version = ProjectSettings.get_setting("application/config/version")
 	SaveManager.save_map(map_path, map_file_dialog.current_file, MapData.to_dict(map_data))
 
 

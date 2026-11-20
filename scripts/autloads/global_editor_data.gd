@@ -14,6 +14,8 @@ var map_editor_ref: HexMapEditor
 var layers_tilemaps_holder: Node2D
 var user_layers: UserLayers
 var main_canvas: CanvasLayer
+## Node inside the editor scene holding the per-hex data of the open map, registers itself on ready
+var hex_data_store: HexDataStore
 
 var selected_map_config: MapTilesetConfiguration = null
 
