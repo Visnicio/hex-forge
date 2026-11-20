@@ -122,7 +122,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	# checks for clicking on a tile while no pencil
 	if event is InputEventMouseButton and has_a_layer_selected_but_no_pencil:
 		
-		if event.button_index != MouseButton.MOUSE_BUTTON_LEFT:
+		# only on press, otherwise the release also counts as a click and selects the hex twice
+		if event.button_index != MouseButton.MOUSE_BUTTON_LEFT or not event.pressed:
 			return
 		
 		var mouse_pos: Vector2 = pencil_tilemap.to_local(get_global_mouse_position())
