@@ -27,6 +27,10 @@ var editor: HexMapEditor
 var current_state: State = State.LOADING
 var last_map_loaded_path: String = ""
 
+var _unsaved_changes_dialog: ConfirmationDialog
+## True while the save dialog was opened from the "unsaved changes" prompt, so the app closes after saving
+var _quit_after_save: bool = false
+
 func _ready() -> void:
 	editor = get_parent() as HexMapEditor
 	map_file_dialog.add_filter("*.json", "Map Files")
@@ -48,6 +52,16 @@ func _ready() -> void:
 	
 	
 	map_file_dialog.file_selected.connect(on_file_selected)
+	map_file_dialog.canceled.connect(func(): _quit_after_save = false)
+
+	# we handle the close request ourselves to warn about unsaved changes
+	get_tree().auto_accept_quit = false
+	_create_unsaved_changes_dialog()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_on_close_requested()
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("shortcut_save"):
@@ -71,7 +85,10 @@ func _on_new_map_pressed() -> void:
 
 func on_file_selected(map_path: String) -> void:
 	if current_state == State.SAVING:
-		save_current_map(map_path, editor.current_map_tileset_configuration)
+		var saved: bool = save_current_map(map_path, editor.current_map_tileset_configuration)
+		if saved and _quit_after_save:
+			get_tree().quit()
+		_quit_after_save = false
 		
 	elif current_state == State.LOADING:
 		load_map_into_editor(map_path);
@@ -104,8 +121,8 @@ func load_map_into_editor(map_path: String) -> void:
 	last_map_loaded_path = map_path
 
 
-## Main function that creates the map data and saving in the json
-func save_current_map(map_path: String, map_tileset_configuration: MapTilesetConfiguration) -> void:
+## Main function that creates the map data and saving in the json, returns false if the file couldnt be written
+func save_current_map(map_path: String, map_tileset_configuration: MapTilesetConfiguration) -> bool:
 	var map_data: MapData  = MapData.new()
 	map_data.map_name = map_name_input.text
 	map_data.markers = _get_markers_to_save()
@@ -113,7 +130,47 @@ func save_current_map(map_path: String, map_tileset_configuration: MapTilesetCon
 	map_data.hexes_data = hex_data_store.get_hexes_to_save()
 	map_data.map_tileset_configuration = map_tileset_configuration
 	map_data.manifest_version = ProjectSettings.get_setting("application/config/version")
-	SaveManager.save_map(map_path, map_file_dialog.current_file, MapData.to_dict(map_data))
+	var saved: bool = SaveManager.save_map(map_path, map_path.get_file(), MapData.to_dict(map_data))
+	if saved:
+		last_map_loaded_path = map_path # so saving on close goes straight to the same file
+	return saved
+
+
+## Always asks before closing, theres no tracking of what changed since the last save
+func _on_close_requested() -> void:
+	if not _unsaved_changes_dialog.visible:
+		_unsaved_changes_dialog.popup_centered()
+
+
+func _create_unsaved_changes_dialog() -> void:
+	_unsaved_changes_dialog = ConfirmationDialog.new()
+	_unsaved_changes_dialog.title = "Close HexForge"
+	_unsaved_changes_dialog.dialog_text = "Do you want to save the map before closing?"
+	_unsaved_changes_dialog.ok_button_text = "Save"
+	_unsaved_changes_dialog.cancel_button_text = "Cancel"
+	# on the left, away from Save/Cancel, so its harder to click by accident
+	_unsaved_changes_dialog.add_button("Quit without saving", false, "discard")
+	add_child(_unsaved_changes_dialog)
+
+	_unsaved_changes_dialog.confirmed.connect(_on_save_before_quit_chosen)
+	_unsaved_changes_dialog.custom_action.connect(func(action: StringName):
+		if action == &"discard":
+			get_tree().quit()
+		)
+
+
+func _on_save_before_quit_chosen() -> void:
+	# map already has a file, just overwrite it like a normal save would
+	if last_map_loaded_path != "":
+		if save_current_map(last_map_loaded_path, editor.current_map_tileset_configuration):
+			get_tree().quit()
+		return
+
+	# map was never saved, ask where to save it and close after
+	_quit_after_save = true
+	current_state = State.SAVING
+	map_file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	map_file_dialog.show()
 
 
 func _get_markers_to_save() -> Dictionary[StringName, MarkerData]:
