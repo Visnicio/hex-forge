@@ -13,6 +13,18 @@
 [ext_resource type="PackedScene" uid="uid://btisvs13umlqr" path="res://scenes/ui/hex_map_editor/hex_data_panel/hex_data_panel.tscn" id="11_t1up2"]
 [ext_resource type="Script" uid="uid://dlds5pytvkays" path="res://scenes/ui/hex_map_editor/hex_data_store.gd" id="12_hxstr"]
 [ext_resource type="Script" uid="uid://t1fajir5wvoo" path="res://scenes/ui/hex_map_editor/map_size_label.gd" id="13_mpsz"]
+[ext_resource type="Script" uid="uid://cfcsvut1jhage" path="res://scenes/ui/hex_map_editor/hex_name_tooltip.gd" id="14_hxtip"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxtip"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.05490196, 0.06666667, 0.12941177, 0.92)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="HexMapEditor" type="Node2D" unique_id=1713256914 node_paths=PackedStringArray("tileset_picker_button", "tiles_grid_container", "map_name_input", "main_background", "camera", "main_panels", "pencil_tilemap", "main_canvas", "tileset_picker_modal", "controls_button", "controls_panel")]
 script = ExtResource("1_ov8ee")
@@ -398,6 +410,22 @@ tilemaps_holder = NodePath("../../LayersTilemaps")
 metadata/_edit_use_anchors_ = true
 
 [node name="HexDataPanel" parent="CanvasLayer" unique_id=1916003888 instance=ExtResource("11_t1up2")]
+
+[node name="TooltipLayer" type="CanvasLayer" parent="." unique_id=1784203961]
+layer = 10
+
+[node name="HexNameTooltip" type="PanelContainer" parent="TooltipLayer" unique_id=1290573418 node_paths=PackedStringArray("editor")]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hxtip")
+script = ExtResource("14_hxtip")
+editor = NodePath("../..")
+
+[node name="HexNameLabel" type="Label" parent="TooltipLayer/HexNameTooltip" unique_id=652817394]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=366084886]
 anchors_preset = 15
