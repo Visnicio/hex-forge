@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="MapTilesetConfiguration" format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/tilesets/map_tileset_configuration.gd" id="1_config"]
+[ext_resource type="TileSet" path="res://my_tileset/tileset.tres" id="2_tileset"]
+[ext_resource type="Script" path="res://resources/definitions/paths/path_style.gd" id="3_style"]
+
+[sub_resource type="Resource" id="Resource_cobblestone"]
+script = ExtResource("3_style")
+id = "my_tileset:cobblestone"
+display_name = "Cobblestone"
+kind = "road"
+color = Color(0.6, 0.6, 0.62, 1)
+width = 0.08
+outline_color = Color(0.2, 0.2, 0.22, 1)
+outline_width = 0.012
+meander_amplitude = 0.04
+meander_depth = 1
+smoothing_iterations = 3
+
+[resource]
+script = ExtResource("1_config")
+tileset_name = "My Tileset"
+tileset_resource = ExtResource("2_tileset")
+tilemap_scale = 1.0
+auto_hex_art_offset = true
+hex_art_offset = Vector2(0, 0)
+road_terrain_set = 0
+road_terrain = 0
+river_terrain_set = 0
+river_terrain = 1
+path_styles = Array[ExtResource("3_style")]([SubResource("Resource_cobblestone")])

@@ -22,3 +22,14 @@ signal hex_dismissed()
 ## TileMapLayer.changed does NOT fire on set_cell, only on property changes, so we need our own
 @warning_ignore("unused_signal")
 signal map_cells_changed()
+
+## Emitted by [method GlobalEditorData.set_active_tool], the value is a [enum GlobalEditorData.EditorTool]
+@warning_ignore("unused_signal")
+signal tool_changed(new_tool: int)
+
+## A road/river was selected (path tools, panel), [code]path_id[/code] is a key of the [PathStore]
+@warning_ignore("unused_signal")
+signal path_selected(path_id: String)
+
+@warning_ignore("unused_signal")
+signal path_dismissed()

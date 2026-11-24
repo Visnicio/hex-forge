@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/blend/blend_controls.gd" id="1_blend"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blend"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+bg_color = Color(0.05490196, 0.06666667, 0.12941177, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="BlendControls" type="PanelContainer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -420.0
+offset_top = -40.0
+offset_right = -8.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_blend")
+script = ExtResource("1_blend")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SmoothToggle" type="CheckButton" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Smooth the borders between biomes (only how the map looks, the map data never changes)"
+text = "Smooth biomes"
+
+[node name="IntensitySlider" type="HSlider" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "How much the hex borders get wiggled"
+max_value = 1.0
+step = 0.05
+value = 0.6
+
+[node name="CoastToggle" type="CheckButton" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Shallow water and a shoreline where water hexes touch land"
+text = "Coastlines"

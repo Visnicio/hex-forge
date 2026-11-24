@@ -13,6 +13,8 @@ A hex tile map editor built in **Godot 4.6**, focused on being genuinely usable 
 - **Tileset picker** — choose from built-in sample tilesets or any mod installed by the user
 - **Save / Load** — maps are serialized to JSON files (`Ctrl+S` / `Ctrl+O`)
 - **World markers** — place annotation markers on the map
+- **Roads and rivers** — draw roads hex to hex and rivers along the hex edges (or through the centers), with names and lore notes, automatic bridges and undo/redo. Drawn as vector lines with any tileset, or with the tileset's own road/river tiles when the mod provides them
+- **Biome smoothing** — optional, purely visual: organic borders between biomes, shallow water and shorelines (bottom right toggles, never saved in the map)
 - **Modding support** — drop a `.pck` file into `user://tilesets/` to add custom tilesets at runtime
 - **Camera controls** — pan (WASD), zoom (scroll wheel), rush mode (Shift)
 - **Hide UI** — press `H` to toggle the interface for a clean view
@@ -97,6 +99,43 @@ my_tileset/                  ← root folder, same name as the .pck file
 
 Export the project as a `.pck` file in Godot (`Project → Export → Export PCK/ZIP`), drop it into the tilesets folder, and restart the editor.
 
+> **Start from the template:** [`templates/mod_template`](templates/mod_template) is a ready Godot project with a complete
+> example mod (ground tiles with custom data, road and river tiles, an extra style) and a "Mod PCK" export preset.
+> Open it in Godot, replace the art, export. See its README.
+
+### Optional: roads, rivers and biome smoothing
+
+Everything below is **optional**. A mod made before these features keeps working without any change: roads and rivers
+are drawn as vector lines and the smoothing guesses what it needs from the tile colors. Use **Check mod** in the tileset
+picker to see what your mod provides and which fallback is used for the rest.
+
+**`MapTilesetConfiguration`** optional fields:
+
+| Field | Default | What it does |
+|---|---|---|
+| `auto_hex_art_offset` / `hex_art_offset` | `true` / `(0, 0)` | Where the hex art sits relative to the cell. Tiles taller than the hex are drawn centered on the cell, so the editor assumes the hex is at the bottom of the texture region. Turn auto off and set the offset (in tile pixels) if roads look shifted from your hexes. |
+| `road_terrain_set` / `road_terrain` | `-1` | Terrain of your road tiles (see below). `-1` = vector roads. |
+| `river_terrain_set` / `river_terrain` | `-1` | Same for rivers that go **through the hex centers** (rivers along the edges are always vector). |
+| `path_styles` | `[]` | Extra `PathStyle` resources (color, width, outline, dashes, meander, bridge sprite) listed next to the built-in styles. Give them unique ids like `"my_mod:cobblestone"`. Sizes are fractions of the hex size. |
+
+**Road/river tiles** use Godot's normal terrain setup, no extra tool needed:
+1. In your `TileSet`, add a terrain set with mode **Match Sides** and a terrain (e.g. "Road").
+2. On each road tile, paint the terrain in the center and the **peering bits on the sides the road leaves through**.
+3. Point `road_terrain_set` / `road_terrain` to them.
+
+The editor computes, for every hex of a road, exactly which sides it connects and looks for a tile with those peering
+bits. Missing combinations (dead ends, crossings you didn't draw...) are drawn as short vector lines, and the user can
+pick a tile by hand for that hex. You don't need all 63 combinations, the 6 two-side pieces plus a dead end already go a long way.
+Path tiles go on their own layer above the ground, so they should be transparent overlays.
+
+**Custom data layers** (add them in the `TileSet` inspector, all optional):
+
+| Name | Type | Used for | When missing |
+|---|---|---|---|
+| `is_water` | `bool` | Shorelines and shallow water | Guessed from the tile color (clearly blue = water) |
+| `blend_color` | `Color` | Colors of shallow water / shore | Average color of the tile |
+| `biome` | `String` | Reported by Check mod (reserved for future features) | Empty |
+
 ---
 
 ## Project Architecture
@@ -157,6 +196,7 @@ TileSetPickerModal._ready()
 - [ ] Export to image (A4 format)
 - [ ] Clickable tiles (attach notes or data to individual cells)
 - [ ] Inkarnate-style freehand drawing (requires shader work)
+- [x] Roads, rivers and biome smoothing (see [docs/roadmap-paths.md](docs/roadmap-paths.md))
 
 ---
 

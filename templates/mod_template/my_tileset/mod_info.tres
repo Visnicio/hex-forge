@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModInfoResource" format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/modding/mod_info_resource.gd" id="1_info"]
+[ext_resource type="Resource" path="res://my_tileset/config.tres" id="2_config"]
+
+[resource]
+script = ExtResource("1_info")
+author = "Your Name"
+mod_name = "My Tileset"
+mod_configuration = ExtResource("2_config")

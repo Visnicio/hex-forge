@@ -15,6 +15,12 @@
 [ext_resource type="Script" uid="uid://t1fajir5wvoo" path="res://scenes/ui/hex_map_editor/map_size_label.gd" id="13_mpsz"]
 [ext_resource type="Script" uid="uid://cfcsvut1jhage" path="res://scenes/ui/hex_map_editor/hex_name_tooltip.gd" id="14_hxtip"]
 [ext_resource type="Script" path="res://scenes/ui/hex_map_editor/hex_data_indicators.gd" id="15_hxind"]
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/paths/path_store.gd" id="16_pstore"]
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/paths/paths_layer.gd" id="17_playr"]
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/paths/path_tools.gd" id="18_ptool"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hex_map_editor/paths/path_panel.tscn" id="19_ppanl"]
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/blend/ground_blend.gd" id="20_gblnd"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hex_map_editor/blend/blend_controls.tscn" id="21_bctrl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxtip"]
 content_margin_left = 8.0
@@ -43,7 +49,7 @@ controls_panel = NodePath("CanvasLayer/ControlsAndInfoModal")
 metadata/_edit_vertical_guides_ = [959.0]
 metadata/_edit_horizontal_guides_ = [541.0, 167.0]
 
-[node name="MapDataManager" type="Node" parent="." unique_id=1252024652 node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers", "hex_data_store")]
+[node name="MapDataManager" type="Node" parent="." unique_id=1252024652 node_paths=PackedStringArray("map_file_dialog", "new_map_button", "save_map_button", "load_map_button", "export_map_button", "map_name_input", "main_canvas", "markers", "hex_data_store", "path_store")]
 script = ExtResource("4_u8lkl")
 map_file_dialog = NodePath("../CanvasLayer/Sidebar/Tools/MapPathDialog")
 new_map_button = NodePath("../CanvasLayer/TopBar/MapSettings/SaveLoadButtons/NewMapButton")
@@ -55,6 +61,7 @@ main_canvas = NodePath("../CanvasLayer")
 markers = NodePath("../Markers")
 world_marker_scene = ExtResource("5_erscx")
 hex_data_store = NodePath("../HexDataStore")
+path_store = NodePath("../PathStore")
 
 [node name="Markers" type="Node" parent="." unique_id=1358410324 node_paths=PackedStringArray("editor", "close_data_container_button", "place_poi_button", "marker_data_container", "marker_name_input", "marker_description_input", "marker_color_input", "delete_marker_button")]
 script = ExtResource("5_ttthk")
@@ -72,6 +79,9 @@ hidden_panel_position = Vector2(320, 0)
 
 [node name="HexDataStore" type="Node" parent="." unique_id=1413108661]
 script = ExtResource("12_hxstr")
+
+[node name="PathStore" type="Node" parent="." unique_id=1648203317]
+script = ExtResource("16_pstore")
 
 [node name="CameraInput" type="Node" parent="." unique_id=1069154919 node_paths=PackedStringArray("editor", "target_camera", "main_canvas")]
 script = ExtResource("3_n2lvb")
@@ -422,6 +432,12 @@ button_pressed = true
 text = "Hex badges"
 metadata/_edit_use_anchors_ = true
 
+[node name="PathPanel" parent="CanvasLayer" unique_id=1731902264 node_paths=PackedStringArray("path_tools") instance=ExtResource("19_ppanl")]
+path_tools = NodePath("../../PathTools")
+
+[node name="BlendControls" parent="CanvasLayer" unique_id=1402551877 node_paths=PackedStringArray("ground_blend") instance=ExtResource("21_bctrl")]
+ground_blend = NodePath("../../GroundBlend")
+
 [node name="HexDataPanel" parent="CanvasLayer" unique_id=1916003888 instance=ExtResource("11_t1up2")]
 
 [node name="TooltipLayer" type="CanvasLayer" parent="." unique_id=1784203961]
@@ -468,3 +484,20 @@ toggle_button = NodePath("../CanvasLayer/HexBadgesToggle")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=983171252]
 
 [node name="LayersTilemaps" type="Node2D" parent="." unique_id=1029171905]
+
+[node name="GroundBlend" type="Node2D" parent="." unique_id=1186029443 node_paths=PackedStringArray("reference_tilemap", "paths_layer")]
+script = ExtResource("20_gblnd")
+reference_tilemap = NodePath("../Pencil")
+paths_layer = NodePath("../PathsLayer")
+
+[node name="PathsLayer" type="Node2D" parent="." unique_id=1093384571 node_paths=PackedStringArray("reference_tilemap", "path_store", "editor")]
+script = ExtResource("17_playr")
+reference_tilemap = NodePath("../Pencil")
+path_store = NodePath("../PathStore")
+editor = NodePath("..")
+
+[node name="PathTools" type="Node2D" parent="." unique_id=1270331946 node_paths=PackedStringArray("editor", "path_store", "paths_layer")]
+script = ExtResource("18_ptool")
+editor = NodePath("..")
+path_store = NodePath("../PathStore")
+paths_layer = NodePath("../PathsLayer")

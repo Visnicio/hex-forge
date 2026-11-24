@@ -1,0 +1,189 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/paths/path_panel.gd" id="1_panel"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 8.0
+content_margin_top = 6.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0.05490196, 0.06666667, 0.12941177, 0.95)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_tools"]
+allow_unpress = true
+
+[node name="PathPanel" type="PanelContainer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -110.0
+offset_right = 260.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+script = ExtResource("1_panel")
+
+[node name="Rows" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Tools" type="HBoxContainer" parent="Rows"]
+layout_mode = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="Rows/Tools"]
+layout_mode = 2
+text = "Paths"
+
+[node name="RoadButton" type="Button" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Draw roads from hex to hex (right click erases)"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tools")
+text = "Road"
+
+[node name="RiverButton" type="Button" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Draw rivers along the hex edges, from the source to the mouth (right click erases)"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tools")
+text = "River"
+
+[node name="SelectButton" type="Button" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Click a road or river to edit it"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tools")
+text = "Select"
+
+[node name="EraseButton" type="Button" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Click/drag over a segment to erase it, shift+click erases the whole path"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tools")
+text = "Erase"
+
+[node name="VSeparator" type="VSeparator" parent="Rows/Tools"]
+layout_mode = 2
+
+[node name="RiverCentersCheck" type="CheckBox" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "New rivers go through the hex centers instead of along the edges (needed to use river tiles from a mod)"
+text = "River by centers"
+
+[node name="AnchorLabel" type="Label" parent="Rows/Tools"]
+layout_mode = 2
+text = "Above:"
+
+[node name="AnchorLayerOption" type="OptionButton" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Layer the roads and rivers are drawn on top of, layers above it cover them"
+
+[node name="ModeLabel" type="Label" parent="Rows/Tools"]
+layout_mode = 2
+text = "Mode:"
+
+[node name="MapModeOption" type="OptionButton" parent="Rows/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Default for every path of the map: Auto uses the tileset's road/river tiles when it has them"
+
+[node name="Details" type="VBoxContainer" parent="Rows"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Rows/Details"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Rows/Details"]
+layout_mode = 2
+
+[node name="PathName" type="LineEdit" parent="Rows/Details/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Path name"
+
+[node name="StyleOption" type="OptionButton" parent="Rows/Details/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Style"
+
+[node name="DeletePathButton" type="Button" parent="Rows/Details/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Delete"
+
+[node name="ClosePathButton" type="Button" parent="Rows/Details/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+text = "X"
+
+[node name="PathDescription" type="TextEdit" parent="Rows/Details"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+placeholder_text = "Description, lore, travel notes..."
+wrap_mode = 1
+
+[node name="RenderRow" type="HBoxContainer" parent="Rows/Details"]
+layout_mode = 2
+
+[node name="RenderLabel" type="Label" parent="Rows/Details/RenderRow"]
+layout_mode = 2
+text = "Draw with:"
+
+[node name="PathModeOption" type="OptionButton" parent="Rows/Details/RenderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Auto follows the map mode, Vector always draws lines, Tiles uses the tileset's road/river tiles"
+
+[node name="TileStatus" type="Label" parent="Rows/Details/RenderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.78, 0.85, 1)
+text_overrun_behavior = 3
+
+[node name="MissingRow" type="HBoxContainer" parent="Rows/Details"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MissingCellOption" type="OptionButton" parent="Rows/Details/MissingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Hexes of this path with no matching tile, pick a tile for them below or keep them as vector"
+
+[node name="VectorHereButton" type="Button" parent="Rows/Details/MissingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Draw this hex as a vector line, even if the tileset has a tile for it"
+text = "Vector here"
+
+[node name="ClearPicksButton" type="Button" parent="Rows/Details/MissingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Forget every tile picked by hand on this path"
+text = "Clear picks"
+
+[node name="TileChoices" type="HFlowContainer" parent="Rows/Details"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2

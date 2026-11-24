@@ -6,6 +6,16 @@ enum CursorMode {
 	PAINTING_TILES,
 }
 
+## What a click on the map does, only one tool is active at a time
+enum EditorTool {
+	NONE,
+	PAINT, ## a tile from the sidebar is selected as pencil
+	ROAD,
+	RIVER,
+	PATH_SELECT,
+	PATH_ERASE,
+}
+
 const NOTHING_SELECTED_CURSOR_SPRITE: Texture2D = preload("res://assets/gfx/ui/kenney_cursor-pack/PNG/Outline/Default/cursor_none.png")
 const PAINTING_TILES_CURSOR_SPRITE: Texture2D = preload("res://assets/gfx/ui/kenney_cursor-pack/PNG/Outline/Default/drawing_brush.png")
 const POINTING_CURSOR_SPRITE: Texture2D = preload("res://assets/gfx/ui/kenney_cursor-pack/PNG/Outline/Default/hand_point.png")
@@ -16,8 +26,24 @@ var user_layers: UserLayers
 var main_canvas: CanvasLayer
 ## Node inside the editor scene holding the per-hex data of the open map, registers itself on ready
 var hex_data_store: HexDataStore
+## Node inside the editor scene holding the roads/rivers of the open map, registers itself on ready
+var path_store: PathStore
+
+## Change it through [method set_active_tool] so everyone listening on [signal SignalBus.tool_changed] knows
+var active_tool: EditorTool = EditorTool.NONE
 
 var selected_map_config: MapTilesetConfiguration = null
+
+func set_active_tool(new_tool: EditorTool) -> void:
+	if new_tool == active_tool:
+		return
+	active_tool = new_tool
+	SignalBus.tool_changed.emit(new_tool)
+
+
+func is_path_tool_active() -> bool:
+	return active_tool in [EditorTool.ROAD, EditorTool.RIVER, EditorTool.PATH_SELECT, EditorTool.PATH_ERASE]
+
 
 func _ready() -> void:
 	# Changes only the arrow shape of the cursor.

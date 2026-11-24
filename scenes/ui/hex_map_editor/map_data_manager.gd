@@ -23,6 +23,9 @@ enum State {
 @export_group("Hexes")
 @export var hex_data_store: HexDataStore
 
+@export_group("Paths")
+@export var path_store: PathStore
+
 var editor: HexMapEditor
 var current_state: State = State.LOADING
 var last_map_loaded_path: String = ""
@@ -81,6 +84,10 @@ func _on_new_map_pressed() -> void:
 	GlobalEditorData.user_layers.add_base_layers()
 	SignalBus.hex_dismissed.emit() # panel could be open with a hex from the old map
 	hex_data_store.clear()
+	SignalBus.path_dismissed.emit()
+	path_store.reset()
+	# undo steps point to the old map (and its freed tilemaps), they cant be replayed on this one
+	editor.undo_redo.clear_history()
 
 
 func on_file_selected(map_path: String) -> void:
@@ -118,6 +125,13 @@ func load_map_into_editor(map_path: String) -> void:
 	SignalBus.hex_dismissed.emit() # panel could be open with a hex from the old map
 	hex_data_store.load_hexes(map_data.hexes_data)
 
+	SignalBus.path_dismissed.emit()
+	path_store.load_from(map_data)
+	editor.undo_redo.clear_history()
+
+	if map_data.format_version > MapMigrations.CURRENT_FORMAT_VERSION:
+		_warn_newer_format(map_data.format_version)
+
 	last_map_loaded_path = map_path
 
 
@@ -128,12 +142,24 @@ func save_current_map(map_path: String, map_tileset_configuration: MapTilesetCon
 	map_data.markers = _get_markers_to_save()
 	map_data.layers = _get_layers_to_save()
 	map_data.hexes_data = hex_data_store.get_hexes_to_save()
+	path_store.write_to(map_data)
 	map_data.map_tileset_configuration = map_tileset_configuration
 	map_data.manifest_version = ProjectSettings.get_setting("application/config/version")
 	var saved: bool = SaveManager.save_map(map_path, map_path.get_file(), MapData.to_dict(map_data))
 	if saved:
 		last_map_loaded_path = map_path # so saving on close goes straight to the same file
 	return saved
+
+
+## The map came from a newer HexForge, things this build doesnt know about would be lost when saving over it
+func _warn_newer_format(version: int) -> void:
+	var dialog: AcceptDialog = AcceptDialog.new()
+	dialog.title = "Map from a newer version"
+	dialog.dialog_text = "This map was saved by a newer HexForge (format %d, this one reads up to %d).\nSome features may be missing, saving over it can lose them." % [version, MapMigrations.CURRENT_FORMAT_VERSION]
+	add_child(dialog)
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered()
 
 
 ## Always asks before closing, theres no tracking of what changed since the last save

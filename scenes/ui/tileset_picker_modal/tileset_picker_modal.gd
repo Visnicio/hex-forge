@@ -45,6 +45,24 @@ func _ready() -> void:
 		hide()
 		)
 
+	_add_mod_check_button()
+
+
+## "Check mod" shows what the selected tileset provides for roads/rivers/smoothing (see [ModLint])
+func _add_mod_check_button() -> void:
+	var dialog: ModLintDialog = ModLintDialog.new()
+	add_child(dialog)
+	var button: Button = Button.new()
+	button.text = "Check mod"
+	button.tooltip_text = "What this tileset provides for roads, rivers and biome smoothing, and what falls back"
+	tileset_picker.get_parent().add_child(button)
+	button.pressed.connect(func() -> void:
+		var selected: String = tileset_picker.get_item_text(tileset_picker.selected) if tileset_picker.selected >= 0 else ""
+		var config: MapTilesetConfiguration = tilesets.get(selected, null)
+		if config == null and GlobalEditorData.map_editor_ref != null:
+			config = GlobalEditorData.map_editor_ref.current_map_tileset_configuration
+		dialog.show_for(config))
+
 
 ## Scans [code]res://samples/[/code] and loads every [MapTilesetConfiguration] found there
 ## into [member tilesets]. Skips hidden files, [code].import[/code] sidecars, and

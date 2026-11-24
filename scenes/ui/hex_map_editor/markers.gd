@@ -41,6 +41,11 @@ func _ready() -> void:
 	marker_data_container.hide()	
 	
 	SignalBus.marker_pressed.connect(_on_marker_pressed)
+	# picking any tool (pencil, road, river...) cancels placing a marker
+	SignalBus.tool_changed.connect(func(new_tool: int):
+		if new_tool != GlobalEditorData.EditorTool.NONE:
+			cancel_placing()
+		)
 	SignalBus.marker_data_panel_dismissed.connect(func(marker):
 		hide_marker_data_panel()
 	)
@@ -67,10 +72,17 @@ func _on_place_poi_button_pressed() -> void:
 	if is_placing: return
 	
 	editor.deselect_current_pencil()
+	GlobalEditorData.set_active_tool(GlobalEditorData.EditorTool.NONE)
 	var preview: Sprite2D = marker_preview_scene.instantiate()
 	add_child(preview)
 	current_preview = preview
 	is_placing = true
+
+
+func cancel_placing() -> void:
+	if is_placing and is_instance_valid(current_preview):
+		current_preview.queue_free()
+	is_placing = false
 
 
 func select_world_marker(world_marker: WorldMarker) -> void:

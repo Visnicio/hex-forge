@@ -7,4 +7,8 @@
 script = ExtResource("1_tjexj")
 tileset_name = "Pixel Fantasy Sample"
 tileset_resource = ExtResource("2_t1peh")
+auto_hex_art_offset = false
+hex_art_offset = Vector2(0, 8)
+road_terrain_set = 0
+road_terrain = 0
 metadata/_custom_type_script = "uid://bmjw4vm8tkwlc"

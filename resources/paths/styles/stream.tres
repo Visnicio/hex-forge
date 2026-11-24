@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PathStyle" format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/paths/path_style.gd" id="1_style"]
+
+[resource]
+script = ExtResource("1_style")
+id = "builtin:stream"
+display_name = "Stream"
+kind = "river"
+color = Color(0.36, 0.66, 0.9, 1)
+width = 0.035
+width_start_multiplier = 0.5
+width_end_multiplier = 1.2
+outline_color = Color(0.08, 0.18, 0.3, 1)
+outline_width = 0.008
+meander_amplitude = 0.2
+meander_depth = 3
+smoothing_iterations = 3

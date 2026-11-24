@@ -12,6 +12,16 @@ var map_tileset_configuration: MapTilesetConfiguration
 var markers: Dictionary[StringName, MarkerData]
 ## Key is hex position in tile coords, value is the hex data
 var hexes_data: Dictionary[Vector2i, HexData] = {}
+## Roads and rivers, key is the path id
+var paths: Dictionary[String, PathData] = {}
+## Seed of the meander of every path, each segment mixes it with its own key so editing one segment doesnt move the rest
+var path_seed: int = 0
+## Name of the user layer the paths are drawn right above, empty means the bottom layer
+var path_anchor_layer: String = ""
+## Map wide default of [member PathData.render_mode]
+var path_render_mode: String = "auto"
+## Format of the file this was loaded from, see [MapMigrations]
+var format_version: int = MapMigrations.CURRENT_FORMAT_VERSION
 
 static func to_dict(data: MapData) -> Dictionary:
 
@@ -27,6 +37,10 @@ static func to_dict(data: MapData) -> Dictionary:
 	for tile_coord: Vector2i in data.hexes_data.keys():
 		hexes_as_dict[tile_coord] = HexData.to_dict(data.hexes_data[tile_coord])
 
+	var paths_as_dict: Dictionary = {}
+	for path_id: String in data.paths.keys():
+		paths_as_dict[path_id] = PathData.to_dict(data.paths[path_id])
+
 	var tileset_config_path: String = ""
 	if data.map_tileset_configuration:
 		tileset_config_path = data.map_tileset_configuration.resource_path
@@ -37,12 +51,22 @@ static func to_dict(data: MapData) -> Dictionary:
 		"map_tileset_configuration": tileset_config_path,
 		"map_name": data.map_name,
 		"markers": markers_as_dict,
-		"hexes_data": hexes_as_dict
+		"hexes_data": hexes_as_dict,
+		"format_version": MapMigrations.CURRENT_FORMAT_VERSION,
+		"paths": paths_as_dict,
+		"path_settings": {
+			"seed": data.path_seed,
+			"anchor_layer": data.path_anchor_layer,
+			"render_mode": data.path_render_mode,
+		},
 	}
 
 ## Parses the raw dictionary read from the save json into a [code]MapData[/code]
-static func from_dict(dict: Dictionary) -> MapData:
+static func from_dict(raw_dict: Dictionary) -> MapData:
 	var new: MapData = MapData.new()
+	new.format_version = MapMigrations.get_format_version(raw_dict)
+	# older saves are upgraded first, so everything below only deals with the current format
+	var dict: Dictionary = MapMigrations.migrate(raw_dict)
 
 	new.map_name = dict.get("map_name", "No Name Saved")
 	new.manifest_version = dict.get("manifest_version", "")
@@ -66,6 +90,20 @@ static func from_dict(dict: Dictionary) -> MapData:
 	for raw_coord: String in raw_hexes.keys():
 		var hex_data: HexData = HexData.from_dict(raw_hexes[raw_coord])
 		new.hexes_data[hex_data.tile_coord] = hex_data
+
+	var raw_paths: Dictionary = dict.get("paths", {})
+	for raw_path: Variant in raw_paths.values():
+		if not raw_path is Dictionary:
+			continue
+		var path_data: PathData = PathData.from_dict(raw_path)
+		if path_data != null:
+			new.paths[path_data.id] = path_data
+
+	var path_settings: Dictionary = dict.get("path_settings", {})
+	# maps without a seed get one now, they had no paths so nothing changes on screen
+	new.path_seed = int(path_settings.get("seed", randi()))
+	new.path_anchor_layer = str(path_settings.get("anchor_layer", ""))
+	new.path_render_mode = str(path_settings.get("render_mode", "auto"))
 
 	return new
 

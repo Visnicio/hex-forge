@@ -1,0 +1,79 @@
+[gd_resource type="TileSet" format=3]
+
+[ext_resource type="Texture2D" path="res://my_tileset/tiles.png" id="1_tiles"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tiles"]
+texture = ExtResource("1_tiles")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/custom_data_0 = "grassland"
+0:0/0/custom_data_1 = false
+0:0/0/custom_data_2 = Color(0.41999998688698, 0.66000002622604, 0.27000001072884, 1)
+1:0/0 = 0
+1:0/0/custom_data_0 = "ocean"
+1:0/0/custom_data_1 = true
+1:0/0/custom_data_2 = Color(0.15999999642372, 0.41999998688698, 0.75, 1)
+2:0/0 = 0
+2:0/0/custom_data_0 = "desert"
+2:0/0/custom_data_1 = false
+2:0/0/custom_data_2 = Color(0.86000001430511, 0.75, 0.44999998807907, 1)
+3:0/0 = 0
+3:0/0/custom_data_0 = "forest"
+3:0/0/custom_data_1 = false
+3:0/0/custom_data_2 = Color(0.15999999642372, 0.37999999523163, 0.17000000178814, 1)
+0:1/0 = 0
+0:1/0/terrain_set = 0
+0:1/0/terrain = 0
+0:1/0/terrains_peering_bit/left_side = 0
+0:1/0/terrains_peering_bit/right_side = 0
+1:1/0 = 0
+1:1/0/terrain_set = 0
+1:1/0/terrain = 0
+1:1/0/terrains_peering_bit/top_left_side = 0
+1:1/0/terrains_peering_bit/bottom_right_side = 0
+2:1/0 = 0
+2:1/0/terrain_set = 0
+2:1/0/terrain = 0
+2:1/0/terrains_peering_bit/top_right_side = 0
+2:1/0/terrains_peering_bit/bottom_left_side = 0
+3:1/0 = 0
+3:1/0/terrain_set = 0
+3:1/0/terrain = 0
+3:1/0/terrains_peering_bit/right_side = 0
+4:1/0 = 0
+4:1/0/terrain_set = 0
+4:1/0/terrain = 0
+4:1/0/terrains_peering_bit/left_side = 0
+0:2/0 = 0
+0:2/0/terrain_set = 0
+0:2/0/terrain = 1
+0:2/0/terrains_peering_bit/left_side = 1
+0:2/0/terrains_peering_bit/right_side = 1
+1:2/0 = 0
+1:2/0/terrain_set = 0
+1:2/0/terrain = 1
+1:2/0/terrains_peering_bit/top_left_side = 1
+1:2/0/terrains_peering_bit/bottom_right_side = 1
+2:2/0 = 0
+2:2/0/terrain_set = 0
+2:2/0/terrain = 1
+2:2/0/terrains_peering_bit/top_right_side = 1
+2:2/0/terrains_peering_bit/bottom_left_side = 1
+
+[resource]
+resource_name = "My Tileset"
+tile_shape = 3
+tile_layout = 5
+tile_size = Vector2i(64, 64)
+terrain_set_0/mode = 2
+terrain_set_0/terrain_0/name = "Road"
+terrain_set_0/terrain_0/color = Color(0.62, 0.48, 0.3, 1)
+terrain_set_0/terrain_1/name = "River"
+terrain_set_0/terrain_1/color = Color(0.3, 0.6, 0.9, 1)
+custom_data_layer_0/name = "biome"
+custom_data_layer_0/type = 4
+custom_data_layer_1/name = "is_water"
+custom_data_layer_1/type = 1
+custom_data_layer_2/name = "blend_color"
+custom_data_layer_2/type = 20
+sources/0 = SubResource("TileSetAtlasSource_tiles")

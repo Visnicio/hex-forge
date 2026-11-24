@@ -1,0 +1,54 @@
+{
+	"hexes_data": {
+		"(1, 1)": {
+			"hex_color": "(0.2, 0.6, 1.0, 1.0)",
+			"hex_freetext": "Synthetic fixture with the same shape as an Alpha 0.3 save",
+			"hex_name": "Fixture Village",
+			"tile_coord": "(1, 1)"
+		}
+	},
+	"layers": {
+		"Decals": {
+			"cells": {
+				"(1, 1)": {
+					"atlas_coords": "(5, 2)",
+					"source_id": 0
+				}
+			},
+			"index": 0
+		},
+		"World": {
+			"cells": {
+				"(0, 0)": {
+					"atlas_coords": "(4, 0)",
+					"source_id": 0
+				},
+				"(1, 0)": {
+					"atlas_coords": "(6, 1)",
+					"source_id": 0
+				},
+				"(1, 1)": {
+					"atlas_coords": "(4, 0)",
+					"source_id": 0
+				},
+				"(2, 1)": {
+					"atlas_coords": "(5, 1)",
+					"source_id": 0
+				}
+			},
+			"index": 1
+		}
+	},
+	"manifest_version": "Alpha 0.3",
+	"map_name": "Fixture",
+	"map_tileset_configuration": "res://samples/david_baumgart_packed_sample.tres",
+	"markers": {
+		"WorldMarker": {
+			"global_position": "(10.5, -3.25)",
+			"marker_color": "(1.0, 0.2676, 0.429, 1.0)",
+			"marker_description": "A marker",
+			"marker_name": "Camp",
+			"marker_scale": "(0.0175, 0.0175)"
+		}
+	}
+}

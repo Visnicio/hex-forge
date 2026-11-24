@@ -8,4 +8,6 @@ script = ExtResource("1_0r38k")
 tileset_name = "David Baumgart Sample"
 tileset_resource = ExtResource("2_62beh")
 tilemap_scale = 0.2
+river_terrain_set = 0
+river_terrain = 0
 metadata/_custom_type_script = "uid://bmjw4vm8tkwlc"

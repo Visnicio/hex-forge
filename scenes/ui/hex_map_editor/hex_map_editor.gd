@@ -67,6 +67,18 @@ func _process(_delta: float) -> void:
 		#pencil_tilemap.z_index = current_selected_layer.z_index
 
 func _input(event: InputEvent) -> void:
+	# --- Undo / Redo ---
+	# checked before the early return below, otherwise undo only worked with a tile pencil selected
+	# (roads/rivers are undone with no pencil)
+	# uses the event (not Input.is_action_just_pressed) so one key press undoes once even if more events arrive that frame,
+	# and leaves ctrl+z alone while typing in a text field
+	var focus_owner: Control = get_viewport().gui_get_focus_owner()
+	var is_typing: bool = focus_owner is LineEdit or focus_owner is TextEdit
+	if not is_typing and event.is_action_pressed("redo"):
+		undo_redo.redo()
+	elif not is_typing and event.is_action_pressed("undo"):
+		undo_redo.undo()
+
 	var is_typing_name: bool = map_name_input.get_global_rect().has_point(get_viewport().get_mouse_position())
 	if is_mouse_on_tools() or is_typing_name or current_pencil_tile_coords == Vector2i(-1, -1):
 		return
@@ -93,12 +105,6 @@ func _input(event: InputEvent) -> void:
 		elif Input.is_action_just_released("right_click") and _is_painting:
 			_commit_stroke("Remove Tile", true)
 
-	# --- Undo / Redo ---
-	if Input.is_action_just_pressed("redo"):
-		undo_redo.redo()
-	elif Input.is_action_just_pressed("undo"):
-		undo_redo.undo()
-		
 	# handles focus from nodes
 	if Input.is_action_just_pressed("left_click") or Input.is_key_pressed(KEY_ESCAPE):
 		get_viewport().gui_release_focus()
@@ -108,6 +114,9 @@ func _input(event: InputEvent) -> void:
 		deselect_current_pencil()
 
 func _unhandled_input(event: InputEvent) -> void:
+	# road/river tools handle their own clicks and cursor
+	if GlobalEditorData.active_tool != GlobalEditorData.EditorTool.NONE:
+		return
 	var has_a_layer_selected_but_no_pencil: bool = current_selected_layer != null and !is_pencil_selected()
 	
 	# checks for hovering a tile while no pencil
@@ -147,6 +156,7 @@ func _create_tile_button(button_texture: Texture2D, buttons_container: GridConta
 		current_pencil_tile_coords = original_tile_coords
 		current_selected_tile_source_id = tile_source_id
 		print("pressed button: ", original_tile_coords)
+		GlobalEditorData.set_active_tool(GlobalEditorData.EditorTool.PAINT)
 		Input.set_default_cursor_shape(Input.CURSOR_CROSS)
 	)
 	
@@ -221,6 +231,8 @@ func is_mouse_on_tools() -> bool:
 func deselect_current_pencil() -> void:
 	current_pencil_tile_coords = Vector2i(-1, -1)
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+	if GlobalEditorData.active_tool == GlobalEditorData.EditorTool.PAINT:
+		GlobalEditorData.set_active_tool(GlobalEditorData.EditorTool.NONE)
 
 func is_pencil_selected() -> bool:
 	return current_pencil_tile_coords != Vector2i(-1, -1)
@@ -298,6 +310,12 @@ func _connect_signals() -> void:
 	# undo/redo replays set_cell through bound methods, version_changed fires on every commit, undo and redo
 	undo_redo.version_changed.connect(SignalBus.map_cells_changed.emit)
 	
+	# picking a road/river tool (or anything that isnt painting) drops the pencil
+	SignalBus.tool_changed.connect(func(new_tool: int):
+		if new_tool != GlobalEditorData.EditorTool.PAINT and is_pencil_selected():
+			deselect_current_pencil()
+		)
+
 	controls_button.pressed.connect(func():
 		controls_panel.show()
 		)
