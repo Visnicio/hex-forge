@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://dlds5pytvkays" path="res://scenes/ui/hex_map_editor/hex_data_store.gd" id="12_hxstr"]
 [ext_resource type="Script" uid="uid://t1fajir5wvoo" path="res://scenes/ui/hex_map_editor/map_size_label.gd" id="13_mpsz"]
 [ext_resource type="Script" uid="uid://cfcsvut1jhage" path="res://scenes/ui/hex_map_editor/hex_name_tooltip.gd" id="14_hxtip"]
+[ext_resource type="Script" path="res://scenes/ui/hex_map_editor/hex_data_indicators.gd" id="15_hxind"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxtip"]
 content_margin_left = 8.0
@@ -409,6 +410,18 @@ script = ExtResource("13_mpsz")
 tilemaps_holder = NodePath("../../LayersTilemaps")
 metadata/_edit_use_anchors_ = true
 
+[node name="HexBadgesToggle" type="CheckButton" parent="CanvasLayer" unique_id=1093847261]
+anchors_preset = -1
+anchor_left = 0.33854166
+anchor_top = 0.9620370
+anchor_right = 0.43229166
+anchor_bottom = 0.9953704
+grow_vertical = 0
+tooltip_text = "Show/hide the badges on hexes with data"
+button_pressed = true
+text = "Hex badges"
+metadata/_edit_use_anchors_ = true
+
 [node name="HexDataPanel" parent="CanvasLayer" unique_id=1916003888 instance=ExtResource("11_t1up2")]
 
 [node name="TooltipLayer" type="CanvasLayer" parent="." unique_id=1784203961]
@@ -444,6 +457,13 @@ metadata/_edit_lock_ = true
 [node name="Pencil" type="TileMapLayer" parent="." unique_id=967185167]
 z_index = 10
 tile_set = ExtResource("2_r5cqj")
+
+[node name="HexDataIndicators" type="Node2D" parent="." unique_id=1847362915 node_paths=PackedStringArray("reference_tilemap", "hex_data_store", "toggle_button")]
+z_index = 15
+script = ExtResource("15_hxind")
+reference_tilemap = NodePath("../Pencil")
+hex_data_store = NodePath("../HexDataStore")
+toggle_button = NodePath("../CanvasLayer/HexBadgesToggle")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=983171252]
 

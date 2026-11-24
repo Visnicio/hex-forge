@@ -5,6 +5,7 @@ class_name HexDataPanel extends Panel
 
 @onready var hex_name: LineEdit = %HexName
 @onready var hex_freetext: TextEdit = %HexFreetext
+@onready var hex_color: ColorPickerButton = %HexColor
 @onready var close_button: Button = %CloseHexDataButton
 @onready var panel_name: Label = %PanelName
 
@@ -25,6 +26,7 @@ func _ready() -> void:
 
 	hex_name.text_changed.connect(_on_hex_name_changed)
 	hex_freetext.text_changed.connect(_on_hex_freetext_changed)
+	hex_color.color_changed.connect(_on_hex_color_changed)
 
 
 func _on_hex_selected(position_in_tile_coords: Vector2i) -> void:
@@ -38,6 +40,7 @@ func _on_hex_selected(position_in_tile_coords: Vector2i) -> void:
 	panel_name.text = "Hex Data - " + str(position_in_tile_coords)
 	hex_name.text = hex_data.hex_name if hex_data else ""
 	hex_freetext.text = hex_data.hex_freetext if hex_data else ""
+	hex_color.color = hex_data.hex_color if hex_data else HexData.DEFAULT_COLOR # setting it by code doesnt emit color_changed
 
 	show_panel()
 
@@ -60,6 +63,13 @@ func _on_hex_freetext_changed() -> void:
 	var hex_data: HexData = _get_or_create_current_hex()
 	if hex_data == null: return
 	hex_data.hex_freetext = hex_freetext.text
+	GlobalEditorData.hex_data_store.notify_changed(_current_coord)
+
+
+func _on_hex_color_changed(new_color: Color) -> void:
+	var hex_data: HexData = _get_or_create_current_hex()
+	if hex_data == null: return
+	hex_data.hex_color = new_color
 	GlobalEditorData.hex_data_store.notify_changed(_current_coord)
 
 

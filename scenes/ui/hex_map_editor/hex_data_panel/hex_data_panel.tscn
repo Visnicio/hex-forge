@@ -59,3 +59,14 @@ anchor_bottom = 0.21575758
 offset_left = 1.5258789e-05
 placeholder_text = "Hex Name"
 alignment = 1
+
+[node name="HexColor" type="ColorPickerButton" parent="." unique_id=1520938471]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.7047354
+anchor_top = 0.16848485
+anchor_right = 0.7604457
+anchor_bottom = 0.21575758
+tooltip_text = "Badge color"
+color = Color(1, 0.78, 0.25, 1)
+edit_alpha = false
